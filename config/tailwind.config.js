@@ -5,12 +5,17 @@ module.exports = {
     './public/*.html',
     './app/helpers/**/*.rb',
     './app/javascript/**/*.js',
+    './app/javascript/**/*.vue',
     './app/views/**/*.{erb,haml,html,slim}'
   ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        sans: ['"Roboto"', 'sans-serif'],
+        chakra: ['"Chakra Petch"', 'sans-serif'],
+      },
+      boxShadow: {
+        glow: '0 0 10px rgba(0, 170, 255, 0.6)',
       },
     },
   },
