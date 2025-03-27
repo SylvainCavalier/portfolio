@@ -30,6 +30,7 @@ gem 'tailwindcss-rails', '~> 3.3', '>= 3.3.1'
 gem 'vite_rails', '~> 3.0', '>= 3.0.17'
 gem "image_processing", "~> 1.2"
 gem 'ostruct'
+gem "dotenv-rails"
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
