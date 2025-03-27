@@ -2,10 +2,9 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   content: [
-    './public/*.html',
+    './public/**/*.html',
     './app/helpers/**/*.rb',
-    './app/javascript/**/*.js',
-    './app/javascript/**/*.vue',
+    './app/javascript/**/*.{js,vue}',
     './app/views/**/*.{erb,haml,html,slim}'
   ],
   theme: {
@@ -19,6 +18,9 @@ module.exports = {
       },
     },
   },
+  safelist: [
+    'bg-red-500', 'bg-gray-100', 'text-white', 'text-black', 'rounded', 'shadow-lg'
+  ],
   plugins: [
     // require('@tailwindcss/forms'),
     // require('@tailwindcss/typography'),

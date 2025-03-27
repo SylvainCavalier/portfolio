@@ -2,8 +2,10 @@ Rails.application.routes.draw do
   # Définition de la page d'accueil
   root 'landing#index'
 
-  # Route pour afficher un projet spécifique
-  resources :projects, only: [:index, :show]
+  # Routes pour afficher les skills et les projects
+  resources :skills, only: [:index]
+  resources :projects, only: [:index]
+  resources :steps, only: [:index]
 
   # Route pour changer la langue
   get '/change_language/:locale', to: 'application#change_language', as: :change_language
