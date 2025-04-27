@@ -19,63 +19,69 @@ Section.create([
 
 puts "Sections created!"
 
+puts "Cleaning database..."
+Project.destroy_all
+
 puts "Creating projects..."
 
-Project.create([
-  # Projet UnrealBnb
-  {
-    name: "UnrealBnb",
-    description: "Marketplace avec des réservations de lieux imaginaires, inspiré d'Airbnb.",
-    github_url: "https://github.com/SylvainCavalier/UnrealBnB",
-    image_url: "https://via.placeholder.com/300x200",
-    tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
-    language: "french"
-  },
-  {
-    name: "UnrealBnb",
-    description: "A marketplace for booking imaginary locations inspired by Airbnb.",
-    github_url: "https://github.com/SylvainCavalier/UnrealBnB",
-    image_url: "https://via.placeholder.com/300x200",
-    tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
-    language: "english"
-  },
-
-  # Projet GN Map
+projects = [
   {
     name: "GN Map",
     description: "Réseau social et plateforme de mise en relation pour les évènements de jeux de rôle grandeur nature, avec une map interactive.",
     github_url: "https://github.com/SylvainCavalier/GN-MAP",
-    image_url: "https://via.placeholder.com/300x200",
-    tech_stack: "Ruby on Rails, Vue.js, Stimulus, Bootstrap",
-    language: "french"
+    tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
+    language: "french",
+    photos: ['gnmap/gnmap1.png', 'gnmap/gnmap2.png'],
+    video: 'gnmap/gnmap_demo.mp4'
   },
   {
     name: "GN Map",
     description: "A social network and matchmaking platform for live-action role-playing events, featuring an interactive map.",
     github_url: "https://github.com/SylvainCavalier/GN-MAP",
-    image_url: "https://via.placeholder.com/300x200",
-    tech_stack: "Ruby on Rails, Vue.js, Stimulus, Bootstrap",
-    language: "english"
+    tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
+    language: "english",
+    photos: ['gnmap/gnmap1.png', 'gnmap/gnmap2.png'],
+    video: 'gnmap/gnmap_demo.mp4'
   },
 
-  # Projet StarWars-RPG
   {
     name: "StarWars-RPG",
     description: "Application web futuriste pour un collectif de jeu de rôle Star Wars permettant l'échange de crédits, la gestion des bases et des familiers, un système de messagerie avec notifications dynamiques et de nombreuses autres fonctionnalités en jeu.",
     github_url: "https://github.com/SylvainCavalier/SW-Crediter",
-    image_url: "https://via.placeholder.com/300x200",
-    tech_stack: "Ruby on Rails, Tailwind",
-    language: "french"
+    tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
+    language: "french",
+    photos: ['starwars_rpg/swjdr1.png', 'starwars_rpg/swjdr2.png', 'starwars_rpg/swjdr3.png'],
+    video: 'starwars_rpg/starwars_demo.mp4'
   },
   {
     name: "StarWars-RPG",
     description: "A futuristic web application for a Star Wars role-playing game collective, enabling credit exchanges, base and pet management, a messaging system with dynamic notifications, and numerous other in-game features.",
     github_url: "https://github.com/SylvainCavalier/SW-Crediter",
-    image_url: "https://via.placeholder.com/300x200",
-    tech_stack: "Ruby on Rails, Tailwind",
-    language: "english"
+    tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
+    language: "english",
+    photos: ['starwars_rpg/swjdr1.png', 'starwars_rpg/swjdr2.png', 'starwars_rpg/swjdr3.png'],
+    video: 'starwars_rpg/starwars_demo.mp4'
   }
-])
+]
+
+projects.each do |project_attrs|
+  photos = project_attrs.delete(:photos)
+  video = project_attrs.delete(:video)
+
+  project = Project.create!(project_attrs)
+
+  # Attacher les photos
+  photos.each do |photo|
+    file_path = Rails.root.join('app', 'assets', 'images', 'projects', photo)
+    project.photos.attach(io: File.open(file_path), filename: File.basename(file_path), content_type: 'image/png')
+  end
+
+  # Attacher la vidéo si elle existe
+  if video
+    video_path = Rails.root.join('app', 'assets', 'images', 'projects', video)
+    project.video.attach(io: File.open(video_path), filename: File.basename(video_path), content_type: 'video/mp4')
+  end
+end
 
 puts "Projects created!"
 

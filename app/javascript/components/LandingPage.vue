@@ -94,7 +94,7 @@
 
     <!-- Section Skills -->
     <section id="skills" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12">
-      <h2 class="text-5xl font-bold mb-12 text-white font-chakra mb-10">
+      <h2 class="text-5xl font-bold mb-10 text-white font-chakra">
         {{ currentLanguage === 'english' ? 'Skills' : 'Compétences' }}
       </h2>
       <div class="flex flex-col w-full max-w-4xl space-y-8">
@@ -112,28 +112,42 @@
     </section>
 
     <!-- Section Projects -->
-    <section id="projects" class="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-6 py-12">
-      <h2 class="text-4xl font-bold mb-10">
+    <section id="projects" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12">
+      <h2 class="text-5xl font-bold mb-10 text-white font-chakra">
         {{ currentLanguage === 'english' ? 'Projects' : 'Projets' }}
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
+      <div class="bg-purple-300 text-white rounded-3xl p-10 mb-16 shadow-glow">
+        Test Tailwind mb-16 avec glow
+      </div>
+      <div class="w-full max-w-2xl">
         <div 
           v-for="(project, index) in filteredProjects" 
-          :key="index" 
-          class="bg-white shadow-xl rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105 border-t-4 border-blue-500"
+          :key="project.id" 
+          class="mb-10 bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border-t-4 px-8 border-purple-600 transition-transform duration-300 hover:scale-105 hover:shadow-purple-glow"
         >
-          <img 
-            :src="project.image_url" 
-            alt="Project Image" 
-            class="w-full h-48 object-cover"
-          >
-          <div class="p-6">
-            <h3 class="font-bold text-2xl mb-2">{{ project.name }}</h3>
-            <p class="text-gray-600 mb-4">{{ project.description }}</p>
-            <p class="text-sm text-gray-500">Tech stack: {{ project.tech_stack }}</p>
+          <!-- Carousel Swiper -->
+          <div class="w-[80%] mx-auto">
+            <Swiper :modules="[Navigation]" navigation class="aspect-video rounded-lg overflow-hidden">
+              <SwiperSlide v-for="(photo, photoIndex) in project.photos" :key="photoIndex">
+                <img :src="photo" class="w-full h-full object-cover" :alt="project.name" />
+              </SwiperSlide>
+
+              <SwiperSlide v-if="project.video">
+                <video controls class="w-full h-full object-cover">
+                  <source :src="project.video" type="video/mp4" />
+                  Votre navigateur ne supporte pas les vidéos HTML5.
+                </video>
+              </SwiperSlide>
+            </Swiper>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-2xl mb-2 text-white">{{ project.name }}</h3>
+            <p class="text-gray-300 mb-4">{{ project.description }}</p>
+            <p class="text-gray-300">Tech stack: {{ project.tech_stack }}</p>
             <a 
               :href="project.github_url" 
-              class="text-blue-500 mt-4 block transition-colors duration-200 hover:text-blue-700"
+              class="text-gray-300 mt-4 block transition-colors duration-200 hover:text-purple-600"
               target="_blank"
             >
               See on GitHub
@@ -167,7 +181,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import { Navigation } from 'swiper/modules'
 import photoUrl from '../assets/your-photo.jpg'
 import logoUrl from '../assets/LogoSpng.png'
 import photofaceUrl from '../assets/photoface.png'
@@ -210,6 +228,41 @@ const flipImage = () => {
   isFlipped.value = !isFlipped.value
 }
 
+watch(filteredProjects, async () => {
+  await nextTick()
+  setTimeout(() => {
+    const swipers = document.querySelectorAll('.swiper')
+
+    swipers.forEach(swiperEl => {
+      const swiperInstance = swiperEl.swiper
+
+      if (!swiperInstance) return
+
+      swiperInstance.on('slideChange', () => {
+        swiperEl.querySelectorAll('video').forEach(video => video.pause())
+
+        const activeSlide = swiperInstance.slides[swiperInstance.activeIndex]
+        const video = activeSlide.querySelector('video')
+        if (video) {
+          video.play().catch(err => console.warn("Impossible de jouer la vidéo :", err))
+        }
+      })
+    })
+
+    const videos = document.querySelectorAll('video')
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const video = entry.target
+        if (!entry.isIntersecting && !video.paused) {
+          video.pause()
+        }
+      })
+    }, { threshold: 0.5 })
+
+    videos.forEach(video => observer.observe(video))
+  }, 300) // laisse un petit délai pour laisser Swiper s'initialiser
+}, { immediate: true })
+
 onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger);
 
@@ -232,6 +285,8 @@ onMounted(async () => {
     
     const projectResponse = await fetch('/projects')
     projects.value = await projectResponse.json()
+
+    await nextTick() 
   } catch (error) {
     console.error(error)
   }
@@ -716,7 +771,37 @@ const submitForm = () => {
 }
 
 .skill-card h3, .skill-card p {
-  position: relative; /* pour rester au-dessus du reflet */
+  position: relative; 
   z-index: 1;
 }
+
+/* Projects */
+
+.shadow-purple-glow {
+  box-shadow: 0 0 20px rgba(176, 0, 232, 0.3);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fff;
+  background: rgba(176, 0, 232, 0.4);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 20px;
+}
+
+.swiper-slide video {
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
 </style>
