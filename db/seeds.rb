@@ -89,29 +89,26 @@ puts "Creating skills..."
 
 skills = [
   # Web Design
-  { name: "Web Design", description: "I craft websites that align with your brand and engage your audience. My will is that each site is not just visually appealing but also robust, scalable, and easy to manage.", language: "english" },
-  { name: "Web Design", description: "Je crée des sites web qui correspondent à votre marque et qui créent de l'engagement. Mon but est que chaque site soit non seulement agréable à visiter, mais aussi robuste, scalable, et facile à gérer", language: "french" },
+  { name: "Web Design", description: "I craft websites and mobile apps that align with your brand and engage your audience. My will is that each site is not just visually appealing but also robust, scalable, and easy to manage.", language: "english" },
+  { name: "Web Design", description: "Je crée des sites web et des apps mobiles qui correspondent à votre marque et qui créent de l'engagement. Mon but est que chaque site soit non seulement agréable à visiter, mais aussi robuste, scalable, et facile à gérer", language: "french" },
 
   # Développement Web
-  { name: "Web Development", description: "Fullstack : HTML, CSS (Bootstrap, Tailwind), Ruby on Rails, JavaScript (Stimulus, Vue.js). I focus on clean, maintainable code and performance-driven solutions.", language: "english" },
-  { name: "Développement Web", description: "Fullstack : HTML, CSS (Bootstrap, Tailwind), Ruby on Rails, JavaScript (Stimulus, Vue.js). Mon approche privilégie un code propre, maintenable et performant.", language: "french" },
+  { name: "Web Development", description: "Fullstack : HTML, CSS (Bootstrap, Tailwind), Ruby on Rails, JavaScript (Stimulus, Vue.js, Typescript). Tools : Zod, Vue Query, Pinia, Axios, Vitest, GSAP, Chart.js, Vue I18n... I focus on clean, maintainable code and performance-driven solutions.", language: "english" },
+  { name: "Développement Web", description: "Fullstack : HTML, CSS (Bootstrap, Tailwind), Ruby on Rails, JavaScript (Stimulus, Vue.js, Typescript). Outils : Tools : Zod, Vue Query, Pinia, Axios, Vitest, GSAP, Chart.js, Vue I18n... Mon approche privilégie un code propre, maintenable et performant.", language: "french" },
 
   # Intelligence Artificielle
   { name: "Artificial Intelligence", description: "Frequent use of AI tools like ChatGPT, MidJourney, Sora, Claude, Perplexity. Proficient in integrating AI APIs for web applications.", language: "english" },
   { name: "Intelligence Artificielle", description: "Utilisation fréquente d'outils d'IA comme ChatGPT, MidJourney, Sora, Claude, Perplexity. Compétence en intégration d'API d'IA pour sites web.", language: "french" },
 
   # Montage Vidéo & Photo
-  { name: "Video & Photo Editing", description: "Regular use of Adobe Premiere Pro, After Effects, and Photoshop at an intermediate-advanced level.", language: "english" },
-  { name: "Montage Vidéo & Photo", description: "Utilisation régulière d'Adobe Premiere Pro, After Effects et Photoshop à un niveau intermédiaire-avancé.", language: "french" },
+  { name: "Video & Photo Editing", description: "Content creator on YouTube : Regular use of Adobe Premiere Pro, After Effects, and Photoshop at an intermediate-advanced level.", language: "english" },
+  { name: "Montage Vidéo & Photo", description: "Créateur de contenu sur YouTube : Utilisation régulière d'Adobe Premiere Pro, After Effects et Photoshop à un niveau intermédiaire-avancé.", language: "french" },
 
   # Langues
   { name: "Languages", description: "French: Native Language - English: Advanced level (C1) - Russian: Good level (B2) - Spanish: Intermediate level (B1)", language: "english" },
   { name: "Langues", description: "Français: Langue maternelle - Anglais: Très bon niveau (C1) - Russe: Bon niveau (B2) - Espagnol: Niveau intermédiaire (B1)", language: "french" },
 
   # Autres compétences
-  { name: "Videography", description: "Content creator on YouTube, video production, and editing.", language: "english" },
-  { name: "Vidéographie", description: "Créateur de contenu sur YouTube, production et montage vidéo.", language: "french" },
-
   { name: "Speaker", description: "Lecturer on disinformation and cybersecurity.", language: "english" },
   { name: "Conférencier", description: "Intervenant sur la désinformation et la cybersécurité.", language: "french" },
 

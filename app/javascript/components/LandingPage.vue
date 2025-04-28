@@ -72,8 +72,16 @@
       <div class="w-full max-w-2xl mt-10 mx-auto">
         <!-- 🏁 Ligne Verticale Animée -->
         <div class="draw-line-height w-full flex justify-center">
-          <svg id="line-svg" xmlns="http://www.w3.org/2000/svg" class="w-2" height="100%" viewBox="0 0 10 1500">
-            <line id="line-path" x1="5" y1="0" x2="5" y2="1350" stroke="#2BAAE2" stroke-width="4.8484" stroke-linecap="round" />
+          <svg id="line-svg"
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-2 h-full"
+              viewBox="0 0 10 1500" 
+              preserveAspectRatio="none">
+            <line id="line-path"
+                  x1="5" y1="0" x2="5" y2="1428"
+                  stroke="#2BAAE2"
+                  stroke-width="4.8484"
+                  stroke-linecap="round" />
           </svg>
           <!-- 📌 ÉTAPES -->
           <ul class="timeline">
@@ -101,7 +109,7 @@
         <div 
           v-for="(skill, index) in filteredSkills" 
           :key="index"
-          class="skill-card opacity-0 transition-all duration-700 flex flex-col md:flex-row justify-between items-center pb-8 border-b border-gray-700 mb-10"
+          class="skill-card opacity-0 transition-all duration-700 flex flex-col md:flex-row justify-between items-center pb-8 border-b border-gray-700"
         >
           <div class="flex items-baseline gap-4">
             <h3 class="font-chakra font-semibold text-3xl text-white">{{ skill.name }}</h3>
@@ -116,24 +124,26 @@
       <h2 class="text-5xl font-bold mb-10 text-white font-chakra">
         {{ currentLanguage === 'english' ? 'Projects' : 'Projets' }}
       </h2>
-      <div class="bg-purple-300 text-white rounded-3xl p-10 mb-16 shadow-glow">
-        Test Tailwind mb-16 avec glow
-      </div>
       <div class="w-full max-w-2xl">
         <div 
-          v-for="(project, index) in filteredProjects" 
-          :key="project.id" 
-          class="mb-10 bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border-t-4 px-8 border-purple-600 transition-transform duration-300 hover:scale-105 hover:shadow-purple-glow"
-        >
+              v-for="(project, index) in filteredProjects" 
+              :key="project.id" 
+              class="project-card mb-10 p-8 transition-transform duration-300 hover:scale-105"
+            >
           <!-- Carousel Swiper -->
           <div class="w-[80%] mx-auto">
-            <Swiper :modules="[Navigation]" navigation class="aspect-video rounded-lg overflow-hidden">
+            <Swiper
+                    :modules="[Navigation]"
+                    navigation
+                    class="aspect-video rounded-lg overflow-hidden"
+                    @swiper="handleSwiper"
+                  >
               <SwiperSlide v-for="(photo, photoIndex) in project.photos" :key="photoIndex">
-                <img :src="photo" class="w-full h-full object-cover" :alt="project.name" />
+                <img :src="photo" class="mx-auto max-h-full object-contain" :alt="project.name" />
               </SwiperSlide>
 
               <SwiperSlide v-if="project.video">
-                <video controls class="w-full h-full object-cover">
+                <video controls class="mx-auto max-h-full object-contain">
                   <source :src="project.video" type="video/mp4" />
                   Votre navigateur ne supporte pas les vidéos HTML5.
                 </video>
@@ -142,7 +152,7 @@
           </div>
 
           <div>
-            <h3 class="font-bold text-2xl mb-2 text-white">{{ project.name }}</h3>
+            <h3 class="font-bold text-2xl mb-2 text-white font-chakra">{{ project.name }}</h3>
             <p class="text-gray-300 mb-4">{{ project.description }}</p>
             <p class="text-gray-300">Tech stack: {{ project.tech_stack }}</p>
             <a 
@@ -157,31 +167,140 @@
       </div>
     </section>
 
-    <section id="contact" class="min-h-screen bg-gray-200 flex flex-col items-center justify-center">
-      <h2 class="text-3xl font-bold mb-6">{{ currentLanguage === 'english' ? 'Contact Me' : 'Me Contacter' }}</h2>
-      <form class="w-full max-w-lg" @submit.prevent="submitForm">
-        <div class="mb-4">
-          <label for="name" class="block text-sm font-medium">{{ currentLanguage === 'english' ? 'Name' : 'Nom' }}</label>
-          <input id="name" v-model="form.name" type="text" class="w-full p-2 border rounded">
+    <!-- Section Contact -->
+    <section id="contact" class="min-h-screen flex flex-col items-center justify-center px-6 py-12 text-black">
+      <h2 class="text-5xl font-bold mb-4 font-chakra">
+        {{ currentLanguage === 'english' ? 'Contact Me' : 'Contactez-moi' }}
+      </h2>
+      <p class="text-gray-600 mb-8 text-3l font-chakra">mail@sylvaincavalier.com</p>
+
+      <form @submit.prevent="submitForm" class="w-full max-w-2xl space-y-6">
+
+        <!-----------------------------------
+            CHAMP NOM
+        --------------------------------->
+        <div class="relative group">
+          <input
+            v-model="form.name"
+            type="text"
+            id="name"
+            placeholder="Votre nom"
+            class="w-full
+                  bg-white/5 backdrop-blur-md
+                  border-2 border-gray-900
+                  rounded-lg
+                  pr-4
+                  py-3
+                  text-white
+                  text-center
+                  placeholder-gray-400
+                  transition-colors
+                  duration-500
+                  ease-out
+                  z-0"
+          />
+
+          <label
+            for="name"
+            class="absolute inset-0
+                  bg-gray-900 text-white
+                  flex items-center justify-center
+                  z-10
+                  transition-all duration-500 ease-out
+                  w-full
+                  group-hover:w-1/5"
+          >
+            Name
+          </label>
         </div>
-        <div class="mb-4">
-          <label for="email" class="block text-sm font-medium">{{ currentLanguage === 'english' ? 'Email' : 'E-mail' }}</label>
-          <input id="email" v-model="form.email" type="email" class="w-full p-2 border rounded">
+
+        <!-----------------------------------
+            CHAMP EMAIL
+        --------------------------------->
+        <div class="relative group">
+          <input
+            v-model="form.email"
+            type="email"
+            id="email"
+            placeholder="votre@email.com"
+            class="w-full bg-white/5 backdrop-blur-md
+                  border-2 border-gray-900
+                  rounded-lg
+                  pr-4
+                  pl-8
+                  py-3
+                  text-white
+                  text-center
+                  placeholder-gray-400
+                  transition-all duration-500
+                  ease-out
+                  z-0"
+          />
+          <label
+            for="email"
+            class="absolute inset-0
+                  bg-gray-900 text-white
+                  flex items-center justify-center
+                  z-10
+                  transition-all duration-500 ease-in-out
+                  w-full
+                  group-hover:w-1/5"
+          >
+            Email
+          </label>
         </div>
-        <div class="mb-4">
-          <label for="message" class="block text-sm font-medium">{{ currentLanguage === 'english' ? 'Message' : 'Message' }}</label>
-          <textarea id="message" v-model="form.message" class="w-full p-2 border rounded"></textarea>
+
+        <!-----------------------------------
+            CHAMP MESSAGE
+        --------------------------------->
+        <div class="relative group">
+          <textarea
+            v-model="form.message"
+            id="message"
+            rows="4"
+            placeholder="Votre message..."
+            class="w-full bg-white/5 backdrop-blur-md
+                  border-2 border-gray-900
+                  rounded-lg
+                  pr-4
+                  pl-8
+                  py-3
+                  text-white
+                  text-center
+                  placeholder-gray-400
+                  transition-all duration-500
+                  ease-out
+                  z-0"
+          ></textarea>
+          <label
+            for="message"
+            class="absolute inset-0
+                  bg-gray-900 text-white
+                  flex items-center justify-center
+                  z-10
+                  transition-all duration-500 ease-in-out
+                  w-full
+                  group-hover:w-1/5"
+          >
+            Message
+          </label>
         </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
-          {{ currentLanguage === 'english' ? 'Send' : 'Envoyer' }}
+
+        <button
+          type="submit"
+          class="bg-gray-900 hover:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+        >
+          Send
         </button>
+
       </form>
     </section>
+
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, nextTick, watch, reactive } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -193,8 +312,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import chroma from "chroma-js";
-
-let lenis;
 
 // Déclaration de la langue actuelle
 const currentLanguage = ref('english')
@@ -219,6 +336,23 @@ const isFlipped = ref(false)
 
 const timelineHeight = ref(0)
 
+const handleSwiper = (swiper) => {
+  swiper.wrapperEl.classList.add('items-center', 'flex');
+};
+
+const form = reactive({
+  name: '',
+  email: '',
+  message: '',
+})
+
+const focusedField = ref('')
+
+function submitForm() {
+  console.log('Formulaire envoyé :', form)
+  // Ici, tu peux ajouter plus tard l'envoi par mail API si tu veux
+}
+
 // Réaction au changement de langue, filtrage local
 const filteredSkills = computed(() => skills.value.filter(skill => skill.language === currentLanguage.value))
 const filteredSteps = computed(() => steps.value.filter(step => step.language === currentLanguage.value))
@@ -230,7 +364,8 @@ const flipImage = () => {
 
 watch(filteredProjects, async () => {
   await nextTick()
-  setTimeout(() => {
+  
+  requestAnimationFrame(() => { // ← plus fiable qu'un simple timeout
     const swipers = document.querySelectorAll('.swiper')
 
     swipers.forEach(swiperEl => {
@@ -260,7 +395,7 @@ watch(filteredProjects, async () => {
     }, { threshold: 0.5 })
 
     videos.forEach(video => observer.observe(video))
-  }, 300) // laisse un petit délai pour laisser Swiper s'initialiser
+  })
 }, { immediate: true })
 
 onMounted(async () => {
@@ -355,7 +490,7 @@ onMounted(async () => {
     });
   });
 
-  // SVG Line scrolling
+  // SVG Line scrolling (inchangé car parfait)
   const path = document.querySelector('#line-path');
   const pathLength = path.getTotalLength();
   path.style.strokeDasharray = pathLength;
@@ -367,40 +502,42 @@ onMounted(async () => {
     const sectionTop = section.offsetTop;
     const sectionHeight = section.offsetHeight;
 
-    const progress = Math.min(Math.max((scrollY - sectionTop) / (sectionHeight - window.innerHeight), 0), 1);
+    const virtualHeight = sectionHeight * 1.05;
+
+    const progress = Math.min(Math.max((scrollY - sectionTop) / (virtualHeight - window.innerHeight), 0), 1);
     const drawLength = pathLength * progress;
 
     path.style.strokeDashoffset = pathLength - drawLength;
   });
 
-  // Intersection Observer pour Timeline (apparition/disparition uniquement vers le haut)
+  // Intersection Observer + gestion direction scroll (version finale)
   const timelineItems = document.querySelectorAll('.timeline-item');
 
   let lastScrollY = window.scrollY;
   let scrollingDown = true;
 
   window.addEventListener('scroll', () => {
-    scrollingDown = window.scrollY > lastScrollY;
+    scrollingDown = window.scrollY > lastScrollY; // Détecte si on descend ou monte
     lastScrollY = window.scrollY;
   });
 
-  const timelineObserverOptions = {
+  const observerOptions = {
     root: null,
-    rootMargin: '-50% 0px -50% 0px',
+    rootMargin: '-50% 0px -50% 0px', // Déclenchement pile au milieu vertical
     threshold: 0
   };
 
-  const timelineObserver = new IntersectionObserver(entries => {
+  const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-      } else if (!scrollingDown) {
+      } else if (!scrollingDown) { // Retire la classe seulement si scroll vers le haut
         entry.target.classList.remove('visible');
       }
     });
-  }, timelineObserverOptions);
+  }, observerOptions);
 
-  timelineItems.forEach(item => timelineObserver.observe(item));
+  timelineItems.forEach(item => observer.observe(item));
 
   // Intersection Observer pour Skills
   const skillCards = document.querySelectorAll('.skill-card');
@@ -428,11 +565,6 @@ onMounted(async () => {
     skillsObserver.observe(card);
   });
 });
-
-const form = ref({ name: '', email: '', message: '' })
-const submitForm = () => {
-  console.log('Formulaire soumis :', form.value)
-}
 </script>
 
 <style scoped>
@@ -654,17 +786,26 @@ const submitForm = () => {
 .timeline {
   position: relative;
   width: 100%;
-  margin: 55vh;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* ⭐ distribue automatiquement les items */
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Timeline Items */
 .timeline-item {
   position: relative;
-  margin-bottom: 55vh;
+  margin: 0;
   opacity: 0;
-  visibility: visible; /* 👈 Important : passer en visible par défaut */
+  visibility: visible;
   transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.timeline-item:first-child {
+  margin-top: 55vh; /* ou ajuste à 50vh, 40vh, selon ton ressenti visuel */
 }
 
 /* Alternance gauche-droite initiale */
@@ -734,7 +875,6 @@ const submitForm = () => {
   left: -70%;
 }
 
-/* Positionnement inchangé */
 .timeline-item.left .timeline-content {
   margin-right: 380px;
 }
@@ -742,6 +882,8 @@ const submitForm = () => {
 .timeline-item.right .timeline-content {
   margin-left: 380px;
 }
+
+/* SECTION SKILLS */
 
 .skill-card {
   position: relative;
@@ -775,10 +917,42 @@ const submitForm = () => {
   z-index: 1;
 }
 
-/* Projects */
+/* SECTION PROJECTS */
 
-.shadow-purple-glow {
-  box-shadow: 0 0 20px rgba(176, 0, 232, 0.3);
+.project-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05); /* Transparence douce */
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #fff;
+  backdrop-filter: blur(10px); /* Verre dépoli */
+  box-shadow: 0 8px 20px rgba(43, 170, 226, 0.2); /* Glow bleu clair */
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(43,170,226,0.25), rgba(124,58,237,0.25)); /* Bleu → Violet */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+}
+
+.project-card:hover::before {
+  opacity: 1;
+}
+
+.project-card h3,
+.project-card p,
+.project-card a {
+  position: relative;
+  z-index: 1;
 }
 
 .swiper-button-next,
