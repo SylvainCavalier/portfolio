@@ -32,7 +32,7 @@ projects = [
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "french",
     photos: ['gnmap/gnmap1.png', 'gnmap/gnmap2.png'],
-    video: 'gnmap/gnmap_demo.mp4'
+    video: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948346/gnmap_demo_bjjdph.mp4'
   },
   {
     name: "GN Map",
@@ -41,7 +41,7 @@ projects = [
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "english",
     photos: ['gnmap/gnmap1.png', 'gnmap/gnmap2.png'],
-    video: 'gnmap/gnmap_demo.mp4'
+    video: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948346/gnmap_demo_bjjdph.mp4'
   },
 
   {
@@ -51,7 +51,7 @@ projects = [
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "french",
     photos: ['starwars_rpg/swjdr1.png', 'starwars_rpg/swjdr2.png', 'starwars_rpg/swjdr3.png'],
-    video: 'starwars_rpg/starwars_demo.mp4'
+    video: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948231/starwars_demo_fcrgq9.mp4'
   },
   {
     name: "StarWars-RPG",
@@ -60,7 +60,7 @@ projects = [
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "english",
     photos: ['starwars_rpg/swjdr1.png', 'starwars_rpg/swjdr2.png', 'starwars_rpg/swjdr3.png'],
-    video: 'starwars_rpg/starwars_demo.mp4'
+    video: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948231/starwars_demo_fcrgq9.mp4'
   }
 ]
 
