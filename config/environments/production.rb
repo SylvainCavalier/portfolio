@@ -30,8 +30,8 @@ Rails.application.configure do
   # config.assets.compile = true
   # config.assets.css_compressor = nil
   
-  config.hosts << "sylvaincavalier.com"
   config.hosts << "www.sylvaincavalier.com"
+  config.hosts << "sylvain-portfolio-10d79dc845dc.herokuapp.com"
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
