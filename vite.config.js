@@ -7,4 +7,8 @@ export default defineConfig({
     RubyPlugin(),
     vue(),
   ],
+  build: {
+    outDir: 'public/vite',
+    emptyOutDir: true,
+  },
 })
