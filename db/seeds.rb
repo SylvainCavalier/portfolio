@@ -1,3 +1,6 @@
+require 'tempfile'
+require 'open-uri'
+
 Project.destroy_all
 Section.destroy_all
 Skill.destroy_all
@@ -32,7 +35,7 @@ projects = [
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "french",
     photos: ['gnmap/gnmap1.png', 'gnmap/gnmap2.png'],
-    video: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948346/gnmap_demo_bjjdph.mp4'
+    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948346/gnmap_demo_bjjdph.mp4'
   },
   {
     name: "GN Map",
@@ -41,7 +44,7 @@ projects = [
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "english",
     photos: ['gnmap/gnmap1.png', 'gnmap/gnmap2.png'],
-    video: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948346/gnmap_demo_bjjdph.mp4'
+    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948346/gnmap_demo_bjjdph.mp4'
   },
 
   {
@@ -51,7 +54,7 @@ projects = [
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "french",
     photos: ['starwars_rpg/swjdr1.png', 'starwars_rpg/swjdr2.png', 'starwars_rpg/swjdr3.png'],
-    video: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948231/starwars_demo_fcrgq9.mp4'
+    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948231/starwars_demo_fcrgq9.mp4'
   },
   {
     name: "StarWars-RPG",
@@ -60,26 +63,25 @@ projects = [
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "english",
     photos: ['starwars_rpg/swjdr1.png', 'starwars_rpg/swjdr2.png', 'starwars_rpg/swjdr3.png'],
-    video: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948231/starwars_demo_fcrgq9.mp4'
+    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948231/starwars_demo_fcrgq9.mp4'
   }
 ]
 
 projects.each do |project_attrs|
   photos = project_attrs.delete(:photos)
-  video = project_attrs.delete(:video)
+  video_url = project_attrs.delete(:video_url)
 
-  project = Project.create!(project_attrs)
+  # Crée le projet avec l'URL de la vidéo directement
+  project = Project.create!(project_attrs.merge(video_url: video_url))
 
-  # Attacher les photos
+  # 📸 Attacher les photos (toujours en local)
   photos.each do |photo|
     file_path = Rails.root.join('app', 'assets', 'images', 'projects', photo)
-    project.photos.attach(io: File.open(file_path), filename: File.basename(file_path), content_type: 'image/png')
-  end
-
-  # Attacher la vidéo si elle existe
-  if video
-    video_path = Rails.root.join('app', 'assets', 'images', 'projects', video)
-    project.video.attach(io: File.open(video_path), filename: File.basename(video_path), content_type: 'video/mp4')
+    project.photos.attach(
+      io: File.open(file_path),
+      filename: File.basename(file_path),
+      content_type: 'image/png'
+    )
   end
 end
 

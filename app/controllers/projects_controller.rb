@@ -11,7 +11,7 @@ class ProjectsController < ApplicationController
         tech_stack: project.tech_stack,
         language: project.language,
         photos: project.photos.map { |photo| url_for(photo) },
-        video: project.video.attached? ? url_for(project.video) : nil
+        video_url: project.video_url
       }
     end
 

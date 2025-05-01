@@ -1,10 +1,5 @@
 <template>
   <div class="min-h-screen bg-gray-100 flex flex-col relative">
-    <!-- Logo en arrière-plan -->
-    <div class="absolute inset-0 flex items-center justify-center opacity-20 z-0">
-      <img :src="logoUrl" alt="Logo de fond" class="w-3/4 max-w-lg">
-    </div>
-
     <header class="bg-gray-900 text-white py-2 px-4 flex justify-evenly items-center fixed w-full z-50 shadow-md">
       <div class="relative w-24 h-24 md:w-24 md:h-24 perspective">
         <div
@@ -32,23 +27,31 @@
         </div>
       </div>
       <h1 ref="overlapText" class="text-4xl font-bold overlap">Sylvain Cavalier</h1>
-      <nav class="space-x-4 flex gap-6">
-        <a href="#info" class="magnetic-link relative inline-block text-xl transition-all duration-300">
-          {{ currentLanguage === 'english' ? 'Info' : 'Infos' }}
-        </a>
-        <a href="#skills" class="magnetic-link relative inline-block text-xl transition-all duration-300">
-          {{ currentLanguage === 'english' ? 'Skills' : 'Compétences' }}
-        </a>
-        <a href="#projects" class="magnetic-link relative inline-block text-xl transition-all duration-300">
-          {{ currentLanguage === 'english' ? 'Projects' : 'Projets' }}
-        </a>
-        <a href="#contact" class="magnetic-link relative inline-block text-xl transition-all duration-300">
-          {{ currentLanguage === 'english' ? 'Contact' : 'Contact' }}
-        </a>
+      <nav class="flex gap-6">
+        <div class="magnetic-area">
+          <a href="#info" class="magnetic-link relative inline-block text-xl transition-all duration-300">
+            {{ currentLanguage === 'english' ? 'Info' : 'Infos' }}
+          </a>
+        </div>
+        <div class="magnetic-area">
+          <a href="#skills" class="magnetic-link relative inline-block text-xl transition-all duration-300">
+            {{ currentLanguage === 'english' ? 'Skills' : 'Compétences' }}
+          </a>
+        </div>
+        <div class="magnetic-area">
+          <a href="#projects" class="magnetic-link relative inline-block text-xl transition-all duration-300">
+            {{ currentLanguage === 'english' ? 'Projects' : 'Projets' }}
+          </a>
+        </div>
+        <div class="magnetic-area">
+          <a href="#contact" class="magnetic-link relative inline-block text-xl transition-all duration-300">
+            {{ currentLanguage === 'english' ? 'Contact' : 'Contact' }}
+          </a>
+        </div>
       </nav>
-      <button @click="switchLanguage" class="glow-button">
+      <button @click="switchLanguage" class="glow-button px-2">
         <div class="gradient"></div>
-        <span>{{ currentLanguage === 'english' ? 'Français' : 'English' }}</span>
+        <span class="text-3xl">{{ currentLanguage === 'english' ? '🇫🇷' : '🇬🇧' }}</span>
       </button>
     </header>
 
@@ -101,10 +104,14 @@
     </section>
 
     <!-- Section Skills -->
-    <section id="skills" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12">
+    <section id="skills" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12 relative">
       <h2 class="text-5xl font-bold mb-10 text-white font-chakra">
         {{ currentLanguage === 'english' ? 'Skills' : 'Compétences' }}
       </h2>
+        <!-- Logo en arrière-plan -->
+      <div class="absolute flex inset-0 items-center justify-center opacity-20 z-0">
+        <img :src="logoUrl" alt="Logo de fond" class="w-3/4 max-w-lg">
+      </div>
       <div class="flex flex-col w-full max-w-4xl space-y-8">
         <div 
           v-for="(skill, index) in filteredSkills" 
@@ -128,7 +135,7 @@
         <div 
               v-for="(project, index) in filteredProjects" 
               :key="project.id" 
-              class="project-card mb-10 p-8 transition-transform duration-300 hover:scale-105"
+              class="project-card mb-16 p-8 transition-transform duration-300 hover:scale-105"
             >
           <!-- Carousel Swiper -->
           <div class="w-[80%] mx-auto">
@@ -142,9 +149,9 @@
                 <img :src="photo" class="mx-auto max-h-full object-contain" :alt="project.name" />
               </SwiperSlide>
 
-              <SwiperSlide v-if="project.video">
+              <SwiperSlide v-if="project.video_url">
                 <video controls class="mx-auto max-h-full object-contain">
-                  <source :src="project.video" type="video/mp4" />
+                  <source :src="project.video_url" type="video/mp4" />
                   Votre navigateur ne supporte pas les vidéos HTML5.
                 </video>
               </SwiperSlide>
@@ -210,7 +217,7 @@
                   w-full
                   group-hover:w-1/5"
           >
-            Name
+            {{ currentLanguage === 'english' ? 'Name' : 'Nom' }}
           </label>
         </div>
 
@@ -290,7 +297,7 @@
           type="submit"
           class="bg-gray-900 hover:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
         >
-          Send
+          {{ currentLanguage === 'english' ? 'Send' : 'Envoyer' }}
         </button>
 
       </form>
@@ -313,13 +320,28 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import chroma from "chroma-js";
 
-// Déclaration de la langue actuelle
-const currentLanguage = ref('english')
+const currentLanguage = ref('english');
 
-// Fonction pour changer de langue
 const switchLanguage = () => {
-  currentLanguage.value = currentLanguage.value === 'english' ? 'french' : 'english'
-}
+  const overlay = document.getElementById('language-transition');
+  if (!overlay) return;
+
+  overlay.classList.remove('is-hidden');
+  overlay.classList.remove('animate-out');
+  overlay.offsetHeight;
+  overlay.classList.add('animate-in');
+
+  setTimeout(() => {
+    currentLanguage.value = currentLanguage.value === 'english' ? 'french' : 'english';
+    overlay.classList.remove('animate-in');
+    overlay.classList.add('animate-out');
+
+    setTimeout(() => {
+      overlay.classList.remove('animate-out');
+      overlay.classList.add('is-hidden');
+    }, 600);
+  }, 600);
+};
 
 const skills = ref([])
 const steps = ref([])
@@ -427,16 +449,18 @@ onMounted(async () => {
   }
 
   // **✅ Effet de lien magnétique amélioré**
-  document.querySelectorAll('.magnetic-link').forEach(link => {
-    link.addEventListener('mousemove', (e) => {
-      const rect = link.getBoundingClientRect();
+  document.querySelectorAll('.magnetic-area').forEach(area => {
+    const link = area.querySelector('.magnetic-link');
+
+    area.addEventListener('mousemove', (e) => {
+      const rect = area.getBoundingClientRect();
       const x = (e.clientX - rect.left - rect.width / 2) * 0.2;
       const y = (e.clientY - rect.top - rect.height / 2) * 0.2;
-      gsap.to(link, { x, y, scale: 1.1, duration: 0.2, ease: "power2.out" }); // ✅ Animation propre avec GSAP
+      gsap.to(link, { x, y, scale: 1.1, duration: 0.2, ease: "power2.out" });
     });
 
-    link.addEventListener('mouseleave', () => {
-      gsap.to(link, { x: 0, y: 0, scale: 1, duration: 0.2, ease: "power2.out" }); // ✅ Remise à zéro fluide
+    area.addEventListener('mouseleave', () => {
+      gsap.to(link, { x: 0, y: 0, scale: 1, duration: 0.2, ease: "power2.out" });
     });
   });
 
@@ -568,6 +592,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
 /* Animation de fade-in */
 
 @keyframes fadeIn {
@@ -601,6 +626,12 @@ onMounted(async () => {
   display: inline-block;
   transition: transform 0.2s ease-out;
   cursor: pointer;
+}
+
+.magnetic-area {
+  padding: 40px; /* zone de détection élargie */
+  margin: -40px; /* pour ne pas casser le layout */
+  display: inline-block;
 }
 
 /* Lettres du nom chevauchées */
@@ -661,111 +692,109 @@ onMounted(async () => {
 .glow-button {
   --button-background: #09041e;
   --button-color: #fff;
-  --button-shadow: rgba(33, 4, 104, 0.2);
   --button-glow-start: #B000E8;
   --button-glow-end: #009FFD;
-  --glow-color: rgba(176, 0, 232, 0.3);
+  --glow-color: rgba(176, 0, 232, 0.15); /* plus doux */
 
   appearance: none;
   outline: none;
   border: none;
   font-family: inherit;
-  font-size: 16px;
   font-weight: 500;
-  border-radius: 11px;
+  border-radius: 8px;
   position: relative;
-  line-height: 24px;
+  line-height: 1;
   cursor: pointer;
   color: var(--button-color);
-  padding: 8px 12px;
   margin: 0;
   background: var(--button-background);
   z-index: 1;
-  transition: all 0.4s ease-out;
+  transition: all 0.3s ease-out;
 
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.6), 0 0 15px var(--glow-color);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4), 0 0 8px var(--glow-color);
 }
 
 .glow-button:hover {
-  box-shadow: 0 0 15px var(--button-glow-start), 
-              0 0 25px var(--button-glow-end), 
-              0 0 30px var(--button-glow-start), 
-              0 0 50px var(--glow-color);
-  background-color: rgba(144, 0, 232, 0.2);
+  box-shadow: 0 0 8px var(--button-glow-start),
+              0 0 10px var(--button-glow-end),
+              0 0 12px var(--button-glow-start),
+              0 0 15px var(--glow-color);
+  background-color: rgba(144, 0, 232, 0.15);
 }
 
 .glow-button:active {
-  transition: box-shadow 0.7s, background-color 0.7s;
+  transform: scale(0.97);
 }
 
 .glow-button::before {
   content: '';
   position: absolute;
-  top: -20%;
-  left: -20%;
-  right: -20%;
-  bottom: -20%;
+  top: -30%;
+  left: -30%;
+  right: -30%;
+  bottom: -30%;
   z-index: -1;
   background: radial-gradient(circle, var(--button-glow-start), transparent);
-  filter: blur(25px);
-  transition: opacity 0.4s;
+  filter: blur(20px);
+  opacity: 0.4;
+  transition: opacity 0.3s;
 }
 
 .glow-button:hover::before {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 /* --- Glitch effect ---> */
 
 .glitch {
   position: relative;
-  color: white !important; /* Assure que le texte est en blanc */
-  cursor: pointer;
-  text-shadow: 
-    -2px -2px 0 #000, 
-    2px -2px 0 #000, 
-    -2px 2px 0 #000, 
-    2px 2px 0 #000 !important; /* On force l'application du contour noir */
-  font-size: 4rem !important; /* Remplace la classe text-5xl pour être sûr */
+  font-size: 3rem;
+  font-weight: bold;
+  color: #111;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  z-index: 1;
 }
 
 .glitch::before,
 .glitch::after {
   content: attr(data-text);
   position: absolute;
-  top: 0;
   left: 0;
+  top: 0;
   width: 100%;
-  background: transparent;
-  clip: rect(0, 0, 0, 0);
+  color: #111;
+  z-index: -1;
 }
 
 .glitch::before {
-  left: -2px;
-  text-shadow: 2px 0 red;
-  animation: glitch-loop-1 0.8s infinite ease-in-out alternate-reverse;
+  text-shadow: -2px 0 #ff00c8;
+  clip-path: inset(0% 0 0% 0);
+  animation: glitch-before 2s infinite linear alternate-reverse;
 }
 
 .glitch::after {
-  left: 2px;
-  text-shadow: -2px 0 blue;
-  animation: glitch-loop-2 0.8s infinite ease-in-out alternate-reverse;
+  text-shadow: 2px 0 #00fff9;
+  clip-path: inset(0% 0 0% 0);
+  animation: glitch-after 3s infinite linear alternate-reverse;
 }
 
-@keyframes glitch-loop-1 {
-  0% { clip: rect(36px, 9999px, 9px, 0); }
-  25% { clip: rect(25px, 9999px, 99px, 0); }
-  50% { clip: rect(50px, 9999px, 102px, 0); }
-  75% { clip: rect(30px, 9999px, 92px, 0); }
-  100% { clip: rect(91px, 9999px, 98px, 0); }
+/* Keyframes utilisant clip-path en % (responsive et propre) */
+@keyframes glitch-before {
+  0% { clip-path: inset(5% 0 80% 0); }
+  25% { clip-path: inset(10% 0 65% 0); }
+  50% { clip-path: inset(40% 0 30% 0); }
+  75% { clip-path: inset(60% 0 10% 0); }
+  100% { clip-path: inset(5% 0 80% 0); }
 }
 
-@keyframes glitch-loop-2 {
-  0% { top: -1px; left: 1px; clip: rect(65px, 9999px, 119px, 0); }
-  25% { top: -6px; left: 4px; clip: rect(79px, 9999px, 19px, 0); }
-  50% { top: -3px; left: 2px; clip: rect(68px, 9999px, 11px, 0); }
-  75% { top: 0px; left: -4px; clip: rect(95px, 9999px, 53px, 0); }
-  100% { top: -1px; left: -1px; clip: rect(31px, 9999px, 149px, 0); }
+@keyframes glitch-after {
+  0% { clip-path: inset(80% 0 5% 0); }
+  25% { clip-path: inset(60% 0 25% 0); }
+  50% { clip-path: inset(30% 0 40% 0); }
+  75% { clip-path: inset(10% 0 60% 0); }
+  100% { clip-path: inset(80% 0 5% 0); }
 }
 
 /* Style de la Timeline */

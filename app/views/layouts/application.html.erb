@@ -16,6 +16,9 @@
   </head>
 
   <body>
-    <%= yield %>
+    <div id="app"></div>
+    <div id="language-transition" class="language-transition hidden">
+      <div class="column" v-for="i in 5" :key="i"></div>
+    </div>
   </body>
 </html>
