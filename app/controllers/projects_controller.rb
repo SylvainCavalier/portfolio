@@ -2,7 +2,9 @@ class ProjectsController < ApplicationController
   include Rails.application.routes.url_helpers
 
   def index
-    @projects = Project.all.map do |project|
+    projects = Project.order(:name)
+  
+    @projects = projects.map do |project|
       {
         id: project.id,
         name: project.name,
@@ -14,7 +16,7 @@ class ProjectsController < ApplicationController
         video_url: project.video_url
       }
     end
-
+  
     render json: @projects
   end
 

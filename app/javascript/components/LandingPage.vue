@@ -372,10 +372,8 @@ const focusedField = ref('')
 
 function submitForm() {
   console.log('Formulaire envoyé :', form)
-  // Ici, tu peux ajouter plus tard l'envoi par mail API si tu veux
 }
 
-// Réaction au changement de langue, filtrage local
 const filteredSkills = computed(() => skills.value.filter(skill => skill.language === currentLanguage.value))
 const filteredSteps = computed(() => steps.value.filter(step => step.language === currentLanguage.value))
 const filteredProjects = computed(() => projects.value.filter(project => project.language === currentLanguage.value))
@@ -387,7 +385,7 @@ const flipImage = () => {
 watch(filteredProjects, async () => {
   await nextTick()
   
-  requestAnimationFrame(() => { // ← plus fiable qu'un simple timeout
+  requestAnimationFrame(() => {
     const swipers = document.querySelectorAll('.swiper')
 
     swipers.forEach(swiperEl => {
@@ -541,13 +539,13 @@ onMounted(async () => {
   let scrollingDown = true;
 
   window.addEventListener('scroll', () => {
-    scrollingDown = window.scrollY > lastScrollY; // Détecte si on descend ou monte
+    scrollingDown = window.scrollY > lastScrollY;
     lastScrollY = window.scrollY;
   });
 
   const observerOptions = {
     root: null,
-    rootMargin: '-50% 0px -50% 0px', // Déclenchement pile au milieu vertical
+    rootMargin: '-50% 0px -50% 0px',
     threshold: 0
   };
 
@@ -555,7 +553,7 @@ onMounted(async () => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
-      } else if (!scrollingDown) { // Retire la classe seulement si scroll vers le haut
+      } else if (!scrollingDown) {
         entry.target.classList.remove('visible');
       }
     });
@@ -629,8 +627,8 @@ onMounted(async () => {
 }
 
 .magnetic-area {
-  padding: 40px; /* zone de détection élargie */
-  margin: -40px; /* pour ne pas casser le layout */
+  padding: 40px;
+  margin: -40px;
   display: inline-block;
 }
 
@@ -694,7 +692,7 @@ onMounted(async () => {
   --button-color: #fff;
   --button-glow-start: #B000E8;
   --button-glow-end: #009FFD;
-  --glow-color: rgba(176, 0, 232, 0.15); /* plus doux */
+  --glow-color: rgba(176, 0, 232, 0.15);
 
   appearance: none;
   outline: none;
@@ -780,7 +778,6 @@ onMounted(async () => {
   animation: glitch-after 3s infinite linear alternate-reverse;
 }
 
-/* Keyframes utilisant clip-path en % (responsive et propre) */
 @keyframes glitch-before {
   0% { clip-path: inset(5% 0 80% 0); }
   25% { clip-path: inset(10% 0 65% 0); }
@@ -818,7 +815,7 @@ onMounted(async () => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* ⭐ distribue automatiquement les items */
+  justify-content: space-between;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -834,10 +831,9 @@ onMounted(async () => {
 }
 
 .timeline-item:first-child {
-  margin-top: 55vh; /* ou ajuste à 50vh, 40vh, selon ton ressenti visuel */
+  margin-top: 55vh;
 }
 
-/* Alternance gauche-droite initiale */
 .timeline-item.left .timeline-content {
   transform: translateX(-150px);
 }
@@ -846,7 +842,6 @@ onMounted(async () => {
   transform: translateX(150px);
 }
 
-/* Apparition/DISPARITION propre et symétrique */
 .timeline-item.visible {
   opacity: 1;
 }
@@ -869,19 +864,18 @@ onMounted(async () => {
 /* Content Box */
 .timeline-content {
   position: relative;
-  background: rgba(28, 28, 28, 0.7); /* Transparence subtile */
+  background: rgba(28, 28, 28, 0.7);
   color: white;
   padding: 20px;
-  border-radius: 16px; /* Plus doux */
+  border-radius: 16px;
   width: 300px;
   transition: transform 0.6s, box-shadow 0.4s;
-  font-family: 'Chakra Petch', sans-serif; /* Police moderne (font-chakra) */
-  backdrop-filter: blur(10px); /* Flou d'arrière-plan pour l'effet glass */
-  box-shadow: 0 8px 24px rgba(176, 0, 232, 0.2); /* Ombrage doux */
-  overflow: hidden; /* Nécessaire pour le reflet */
+  font-family: 'Chakra Petch', sans-serif;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(176, 0, 232, 0.2);
+  overflow: hidden;
 }
 
-/* Effet de reflet léger */
 .timeline-content::before {
   content: '';
   position: absolute;
@@ -916,11 +910,11 @@ onMounted(async () => {
 
 .skill-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.05); /* transparence légère */
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   padding: 1.5rem;
   color: #fff;
-  backdrop-filter: blur(10px); /* effet verre dépoli */
+  backdrop-filter: blur(10px);
   box-shadow: 0 8px 20px rgba(176, 0, 232, 0.2);
   overflow: hidden;
 }
@@ -950,12 +944,12 @@ onMounted(async () => {
 
 .project-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.05); /* Transparence douce */
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   padding: 1.5rem;
   color: #fff;
-  backdrop-filter: blur(10px); /* Verre dépoli */
-  box-shadow: 0 8px 20px rgba(43, 170, 226, 0.2); /* Glow bleu clair */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(43, 170, 226, 0.2);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -967,7 +961,7 @@ onMounted(async () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(43,170,226,0.25), rgba(124,58,237,0.25)); /* Bleu → Violet */
+  background: linear-gradient(135deg, rgba(43,170,226,0.25), rgba(124,58,237,0.25));
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 0;

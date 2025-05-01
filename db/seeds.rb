@@ -22,9 +22,6 @@ Section.create([
 
 puts "Sections created!"
 
-puts "Cleaning database..."
-Project.destroy_all
-
 puts "Creating projects..."
 
 projects = [
@@ -76,7 +73,7 @@ projects.each do |project_attrs|
 
   # 📸 Attacher les photos (toujours en local)
   photos.each do |photo|
-    file_path = Rails.root.join('app', 'assets', 'images', 'projects', photo)
+    file_path = Rails.root.join('db', 'projects', photo)
     project.photos.attach(
       io: File.open(file_path),
       filename: File.basename(file_path),
