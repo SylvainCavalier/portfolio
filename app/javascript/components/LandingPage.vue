@@ -1,6 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex flex-col relative">
+  <div class="min-h-screen bg-gray-100 flex flex-col relative overflow-x-hidden">
     <header class="bg-gray-900 text-white py-2 px-4 flex justify-evenly items-center fixed w-full z-50 shadow-md">
+      <!-- Photo -->
       <div class="relative w-24 h-24 md:w-24 md:h-24 perspective">
         <div
           class="flip-card-inner w-full h-full transition-transform duration-700 ease-out"
@@ -26,8 +27,12 @@
           </div>
         </div>
       </div>
-      <h1 ref="overlapText" class="text-4xl font-bold overlap">Sylvain Cavalier</h1>
-      <nav class="flex gap-6">
+
+      <!-- Nom -->
+      <h1 ref="overlapText" class="text-3xl m-2 font-bold overlap">Sylvain Cavalier</h1>
+
+      <!-- Menu de navigation -->
+      <nav class="hidden md:flex gap-6">
         <div class="magnetic-area">
           <a href="#info" class="magnetic-link relative inline-block text-xl transition-all duration-300">
             {{ currentLanguage === 'english' ? 'Info' : 'Infos' }}
@@ -49,7 +54,18 @@
           </a>
         </div>
       </nav>
-      <button @click="switchLanguage" class="glow-button px-2">
+      <!-- Bouton hamburger (mobile) -->
+      <button @click="toggleMobileMenu" class="block md:hidden text-3xl">
+        ☰
+      </button>
+      <!-- Menu mobile -->
+      <div v-if="mobileMenuOpen" class="md:hidden absolute top-16 right-0 w-[40vw] bg-gray-900 z-40 flex flex-col items-center space-y-4 py-4">
+        <a href="#info">Info</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <button @click="switchLanguage">
         <div class="gradient"></div>
         <span class="text-3xl">{{ currentLanguage === 'english' ? '🇫🇷' : '🇬🇧' }}</span>
       </button>
@@ -60,7 +76,7 @@
       <h2 class="glitch font-chakra text-5xl font-bold opacity-0 animate-fadeIn" :data-text="currentLanguage === 'english' ? 'Web Developer & Creative' : 'Développeur Web & Créatif'">
         {{ currentLanguage === 'english' ? 'Web Developer & Creative' : 'Développeur Web & Créatif' }}
       </h2>
-      <p class="font-chakra mt-4 text-lg opacity-0 animate-fadeIn delay-200">
+      <p class="font-chakra m-4 text-lg text-center opacity-0 animate-fadeIn delay-200">
         {{ currentLanguage === 'english' ? 'I left a career in Law to pursue my passion for Web development.' : 'J\'ai quitté une carrière en droit pour me consacrer à ma passion pour le développement web.' }}
       </p>
       <div class="absolute bottom-10 animate-bounce text-gray-700">⬇ {{ currentLanguage === 'english' ? 'Scroll to Explore' : 'Faites défiler pour explorer' }} ⬇</div>
@@ -198,7 +214,7 @@
                   rounded-lg
                   pr-4
                   py-3
-                  text-white
+                  text-black
                   text-center
                   placeholder-gray-400
                   transition-colors
@@ -213,12 +229,17 @@
                   bg-gray-900 text-white
                   flex items-center justify-center
                   z-10
-                  transition-all duration-500 ease-out
-                  w-full
-                  group-hover:w-1/5"
+                  transition-all duration-500 ease-out"
+                  :class="[form.name ? 'w-1/5' : 'group-hover:w-1/5 w-full']"
           >
             {{ currentLanguage === 'english' ? 'Name' : 'Nom' }}
           </label>
+          <div
+            v-if="form.name"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-xl"
+          >
+            ✔
+          </div>
         </div>
 
         <!-----------------------------------
@@ -236,7 +257,7 @@
                   pr-4
                   pl-8
                   py-3
-                  text-white
+                  text-black
                   text-center
                   placeholder-gray-400
                   transition-all duration-500
@@ -249,12 +270,17 @@
                   bg-gray-900 text-white
                   flex items-center justify-center
                   z-10
-                  transition-all duration-500 ease-in-out
-                  w-full
-                  group-hover:w-1/5"
+                  transition-all duration-500 ease-in-out"
+                  :class="[form.email ? 'w-1/5' : 'group-hover:w-1/5 w-full']"
           >
             Email
           </label>
+          <div
+            v-if="form.email"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-xl"
+          >
+            ✔
+          </div>
         </div>
 
         <!-----------------------------------
@@ -272,7 +298,7 @@
                   pr-4
                   pl-8
                   py-3
-                  text-white
+                  text-black
                   text-center
                   placeholder-gray-400
                   transition-all duration-500
@@ -285,12 +311,17 @@
                   bg-gray-900 text-white
                   flex items-center justify-center
                   z-10
-                  transition-all duration-500 ease-in-out
-                  w-full
-                  group-hover:w-1/5"
+                  transition-all duration-500 ease-in-out"
+                  :class="[form.message ? 'w-1/5' : 'group-hover:w-1/5 w-full']"
           >
             Message
           </label>
+          <div
+            v-if="form.message"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 text-xl"
+          >
+            ✔
+          </div>
         </div>
 
         <button
@@ -319,6 +350,11 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import chroma from "chroma-js";
+
+const mobileMenuOpen = ref(false)
+const toggleMobileMenu = () => {
+  mobileMenuOpen.value = !mobileMenuOpen.value
+}
 
 const currentLanguage = ref('english');
 
@@ -704,7 +740,7 @@ onMounted(async () => {
   line-height: 1;
   cursor: pointer;
   color: var(--button-color);
-  margin: 0;
+  margin: 1rem;
   background: var(--button-background);
   z-index: 1;
   transition: all 0.3s ease-out;
@@ -898,12 +934,14 @@ onMounted(async () => {
   left: -70%;
 }
 
-.timeline-item.left .timeline-content {
-  margin-right: 380px;
-}
+@media (min-width: 768px) {
+  .timeline-item.left .timeline-content {
+    margin-right: 380px;
+  }
 
-.timeline-item.right .timeline-content {
-  margin-left: 380px;
+  .timeline-item.right .timeline-content {
+    margin-left: 380px;
+  }
 }
 
 /* SECTION SKILLS */
