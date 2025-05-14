@@ -27,6 +27,7 @@ gem 'vite_rails', '~> 3.0', '>= 3.0.17'
 gem "image_processing", "~> 1.2"
 gem 'ostruct'
 gem "dotenv-rails"
+gem "cloudinary"
 gem "activestorage-cloudinary-service"
 
 # Use Redis adapter to run Action Cable in production
