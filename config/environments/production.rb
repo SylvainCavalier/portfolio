@@ -32,6 +32,7 @@ Rails.application.configure do
   
   config.hosts << "www.sylvaincavalier.com"
   config.hosts << "sylvain-portfolio-10d79dc845dc.herokuapp.com"
+  config.hosts << "sylvaincavalier.com"
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
