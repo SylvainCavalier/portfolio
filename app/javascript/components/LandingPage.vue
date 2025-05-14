@@ -59,12 +59,17 @@
         ☰
       </button>
       <!-- Menu mobile -->
-      <div v-if="mobileMenuOpen" class="md:hidden absolute top-16 right-0 w-[40vw] bg-gray-900 z-40 flex flex-col items-center space-y-4 py-4">
-        <a href="#info">Info</a>
-        <a href="#skills">Skills</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-      </div>
+      <transition name="menu">
+        <div
+          v-show="mobileMenuOpen"
+          class="md:hidden absolute top-16 right-0 w-[40vw] bg-gray-900 z-40 flex flex-col items-center space-y-4 py-4"
+        >
+          <a href="#info">Info</a>
+          <a href="#skills">Skills</a>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </transition>
       <button @click="switchLanguage">
         <div class="gradient"></div>
         <span class="text-3xl">{{ currentLanguage === 'english' ? '🇫🇷' : '🇬🇧' }}</span>
@@ -623,6 +628,13 @@ onMounted(async () => {
     skillsObserver.observe(card);
   });
 });
+
+onMounted(() => {
+  window.addEventListener('scroll', () => {
+    mobileMenuOpen.value = false
+  })
+})
+
 </script>
 
 <style scoped>
@@ -776,6 +788,24 @@ onMounted(async () => {
 
 .glow-button:hover::before {
   opacity: 0.8;
+}
+
+/* --- Menu Hamburger ---> */
+
+.menu-enter-active,
+.menu-leave-active {
+  transition: all 0.3s ease;
+  transform-origin: top right;
+}
+.menu-enter-from,
+.menu-leave-to {
+  opacity: 0;
+  transform: scaleY(0);
+}
+.menu-enter-to,
+.menu-leave-from {
+  opacity: 1;
+  transform: scaleY(1);
 }
 
 /* --- Glitch effect ---> */

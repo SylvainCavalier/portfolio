@@ -31,7 +31,10 @@ projects = [
     github_url: "https://github.com/SylvainCavalier/GN-MAP",
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "french",
-    photos: ['gnmap/gnmap1.png', 'gnmap/gnmap2.png'],
+    photos: [
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948234/gnmap1_jcqab9.png",
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948231/gnmap2_gezfha.png"
+    ],
     video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948346/gnmap_demo_bjjdph.mp4'
   },
   {
@@ -40,7 +43,10 @@ projects = [
     github_url: "https://github.com/SylvainCavalier/GN-MAP",
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "english",
-    photos: ['gnmap/gnmap1.png', 'gnmap/gnmap2.png'],
+    photos: [
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948234/gnmap1_jcqab9.png",
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948231/gnmap2_gezfha.png"
+    ],
     video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948346/gnmap_demo_bjjdph.mp4'
   },
 
@@ -50,8 +56,13 @@ projects = [
     github_url: "https://github.com/SylvainCavalier/SW-Crediter",
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "french",
-    photos: ['starwars_rpg/swjdr1.png', 'starwars_rpg/swjdr2.png', 'starwars_rpg/swjdr3.png'],
-    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948231/starwars_demo_fcrgq9.mp4'
+    photos: [
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr1_h8jggi.png",
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948230/swjdr3_enml0x.png",
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr4_z9jwah.png",
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr8_w2t9fz.png"
+    ],
+    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1747236590/starwars_demo_ftsobj.mp4'
   },
   {
     name: "StarWars-RPG",
@@ -59,25 +70,28 @@ projects = [
     github_url: "https://github.com/SylvainCavalier/SW-Crediter",
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "english",
-    photos: ['starwars_rpg/swjdr1.png', 'starwars_rpg/swjdr2.png', 'starwars_rpg/swjdr3.png'],
-    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1745948231/starwars_demo_fcrgq9.mp4'
+    photos: [
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr1_h8jggi.png",
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948230/swjdr3_enml0x.png",
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr4_z9jwah.png",
+      "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr8_w2t9fz.png"
+    ],
+    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1747236590/starwars_demo_ftsobj.mp4.mp4'
   }
 ]
+
 
 projects.each do |project_attrs|
   photos = project_attrs.delete(:photos)
   video_url = project_attrs.delete(:video_url)
 
-  # Crée le projet avec l'URL de la vidéo directement
   project = Project.create!(project_attrs.merge(video_url: video_url))
 
-  # 📸 Attacher les photos (toujours en local)
-  photos.each do |photo|
-    file_path = Rails.root.join('db', 'projects', photo)
+  photos.each do |photo_url|
     project.photos.attach(
-      io: File.open(file_path),
-      filename: File.basename(file_path),
-      content_type: 'image/png'
+      io: URI.open(photo_url),
+      filename: File.basename(URI.parse(photo_url).path),
+      content_type: "image/png"
     )
   end
 end
