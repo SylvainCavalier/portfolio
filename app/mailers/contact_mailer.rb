@@ -1,13 +1,13 @@
 class ContactMailer < ApplicationMailer
-  def contact_email(name, email, message)
-    @name = name
-    @sender_email = email
-    @message = message
+  def contact_email
+    @name = params[:name]
+    @sender_email = params[:email]
+    @message = params[:message]
 
     mail(
       to: 'mail@sylvaincavalier.com',
-      from: email,
-      subject: "Nouveau message de #{name}"
+      from: @sender_email,
+      subject: "Nouveau message de #{@name}"
     )
   end
 end
