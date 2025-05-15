@@ -62,7 +62,7 @@ projects = [
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr4_z9jwah.png",
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr8_w2t9fz.png"
     ],
-    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1747236590/starwars_demo_ftsobj.mp4'
+    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1747318785/starwars_reencoded_xdbfsk.mp4'
   },
   {
     name: "StarWars-RPG",
@@ -76,7 +76,7 @@ projects = [
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr4_z9jwah.png",
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr8_w2t9fz.png"
     ],
-    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1747236590/starwars_demo_ftsobj.mp4.mp4'
+    video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1747318785/starwars_reencoded_xdbfsk.mp4'
   }
 ]
 
