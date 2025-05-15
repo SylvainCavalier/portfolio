@@ -227,8 +227,6 @@
                   ease-out
                   z-0"
           />
-          <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
-
           <label
             for="name"
             class="absolute inset-0
@@ -247,6 +245,7 @@
             ✔
           </div>
         </div>
+        <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
 
         <!-----------------------------------
             CHAMP EMAIL
@@ -270,7 +269,6 @@
                   ease-out
                   z-0"
           />
-          <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
           <label
             for="email"
             class="absolute inset-0
@@ -289,6 +287,7 @@
             ✔
           </div>
         </div>
+        <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
 
         <!-----------------------------------
             CHAMP MESSAGE
@@ -312,7 +311,6 @@
                   ease-out
                   z-0"
           >
-          <p v-if="errors.message" class="text-red-500 text-sm mt-1">{{ errors.message }}</p>
           </textarea>
           <label
             for="message"
@@ -332,6 +330,7 @@
             ✔
           </div>
         </div>
+        <p v-if="errors.message" class="text-red-500 text-sm mt-1">{{ errors.message }}</p>
 
         <button
           type="submit"
@@ -345,6 +344,7 @@
     </section>
 
   </div>
+  <Flash :message="flashNotice" @clear="flashNotice = ''" />
 </template>
 
 <script setup>
@@ -361,7 +361,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import chroma from "chroma-js";
 import { z } from "zod"
+import Flash from './Flash.vue'
 
+const flashNotice = ref('')
 const mobileMenuOpen = ref(false)
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
@@ -424,9 +426,9 @@ const errors = reactive({
 })
 
 const contactSchema = z.object({
-  name: z.string().min(1, "Le nom est requis"),
-  email: z.string().email("Adresse email invalide"),
-  message: z.string().min(10, "Le message doit contenir au moins 10 caractères"),
+  name: z.string().min(1, "Le nom est requis").max(100, "Le nom est trop long"),
+  email: z.string().email("Adresse email invalide").max(255, "Email trop long"),
+  message: z.string().min(10, "Le message doit contenir au moins 10 caractères").max(2000, "Le message est trop long"),
 })
 
 async function submitForm() {
@@ -448,21 +450,29 @@ async function submitForm() {
   isSending.value = true
 
   try {
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     const response = await fetch("/contact", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": token
+    },
       body: JSON.stringify(form)
     })
 
-    if (!response.ok) throw new Error("Échec de l'envoi")
+    const json = await response.json()
 
-    alert("✉️ Message envoyé ! Merci !")
+    if (!response.ok) {
+      throw new Error(json.message || "Erreur lors de l'envoi")
+    }
+
+    flashNotice.value = json.message || "✉️ Message envoyé ! Merci !"
     form.name = ''
     form.email = ''
     form.message = ''
   } catch (error) {
     console.error(error)
-    alert("Erreur lors de l'envoi. Réessayez plus tard.")
+    flashNotice.value = error.message || "Erreur inconnue lors de l’envoi"
   } finally {
     isSending.value = false
   }
