@@ -6,7 +6,8 @@ class ContactMailer < ApplicationMailer
 
     mail(
       to: 'mail@sylvaincavalier.com',
-      from: @sender_email,
+      from: 'mail@sylvaincavalier.com',
+      reply_to: @sender_email,
       subject: "Nouveau message de #{@name}"
     )
   end
