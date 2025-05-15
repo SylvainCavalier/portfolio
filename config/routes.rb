@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'contact/send_message'
   # Définition de la page d'accueil
   root 'landing#index'
 
@@ -15,4 +16,6 @@ Rails.application.routes.draw do
 
   # Vérification du statut de l'application
   get "up" => "rails/health#show", as: :rails_health_check
+
+  post '/contact', to: 'contact#send_message'
 end

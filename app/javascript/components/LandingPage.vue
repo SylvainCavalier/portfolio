@@ -227,6 +227,7 @@
                   ease-out
                   z-0"
           />
+          <p v-if="errors.name" class="text-red-500 text-sm mt-1">{{ errors.name }}</p>
 
           <label
             for="name"
@@ -269,6 +270,7 @@
                   ease-out
                   z-0"
           />
+          <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
           <label
             for="email"
             class="absolute inset-0
@@ -309,7 +311,9 @@
                   transition-all duration-500
                   ease-out
                   z-0"
-          ></textarea>
+          >
+          <p v-if="errors.message" class="text-red-500 text-sm mt-1">{{ errors.message }}</p>
+          </textarea>
           <label
             for="message"
             class="absolute inset-0
@@ -331,9 +335,10 @@
 
         <button
           type="submit"
-          class="bg-gray-900 hover:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300"
+          :disabled="isSending"
+          class="bg-gray-900 hover:bg-gray-400 text-white font-bold py-3 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {{ currentLanguage === 'english' ? 'Send' : 'Envoyer' }}
+          {{ isSending ? 'Envoi...' : (currentLanguage === 'english' ? 'Send' : 'Envoyer') }}
         </button>
 
       </form>
@@ -355,6 +360,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import chroma from "chroma-js";
+import { z } from "zod"
 
 const mobileMenuOpen = ref(false)
 const toggleMobileMenu = () => {
@@ -403,16 +409,63 @@ const handleSwiper = (swiper) => {
   swiper.wrapperEl.classList.add('items-center', 'flex');
 };
 
+const isSending = ref(false)
+
 const form = reactive({
   name: '',
   email: '',
-  message: '',
+  message: ''
 })
 
-const focusedField = ref('')
+const errors = reactive({
+  name: '',
+  email: '',
+  message: ''
+})
 
-function submitForm() {
-  console.log('Formulaire envoyé :', form)
+const contactSchema = z.object({
+  name: z.string().min(1, "Le nom est requis"),
+  email: z.string().email("Adresse email invalide"),
+  message: z.string().min(10, "Le message doit contenir au moins 10 caractères"),
+})
+
+async function submitForm() {
+  if (isSending.value) return
+
+  const result = contactSchema.safeParse(form)
+  if (!result.success) {
+    const fieldErrors = result.error.flatten().fieldErrors
+    errors.name = fieldErrors.name?.[0] || ''
+    errors.email = fieldErrors.email?.[0] || ''
+    errors.message = fieldErrors.message?.[0] || ''
+    return
+  }
+
+  errors.name = ''
+  errors.email = ''
+  errors.message = ''
+
+  isSending.value = true
+
+  try {
+    const response = await fetch("/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form)
+    })
+
+    if (!response.ok) throw new Error("Échec de l'envoi")
+
+    alert("✉️ Message envoyé ! Merci !")
+    form.name = ''
+    form.email = ''
+    form.message = ''
+  } catch (error) {
+    console.error(error)
+    alert("Erreur lors de l'envoi. Réessayez plus tard.")
+  } finally {
+    isSending.value = false
+  }
 }
 
 const filteredSkills = computed(() => skills.value.filter(skill => skill.language === currentLanguage.value))
