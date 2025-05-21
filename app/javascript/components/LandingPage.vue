@@ -87,9 +87,22 @@
       <div class="absolute bottom-10 animate-bounce text-gray-700">⬇ {{ currentLanguage === 'english' ? 'Scroll to Explore' : 'Faites défiler pour explorer' }} ⬇</div>
     </section>
 
+    <!-- Section intermédiaire pour permettre le scroll -->
+    <div id="transition-wrap" class="fixed inset-0 pointer-events-none z-20">
+      <div class="transition-panel">
+        <div class="transition-column top"></div>
+        <div class="transition-column bottom"></div>
+      </div>
+    </div>
+
+    <div id="scrollSpacer" style="height: 300vh;"></div>
+
+    <!-- 🎥 TRANSITION VERS INFO (Effet d'ouverture) -->
+    <section id="info-transition" class="fixed inset-0 flex items-center justify-center bg-gray-900 z-10"></section>
+
     <!-- 📍 SECTION TIMELINE -->
     <section id="info" class="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-white pt-24">
-      <h2 ref="infoTitle" class="text-6xl font-bold text-white mb-10">
+      <h2 ref="infoTitle" class="text-6xl font-chakra font-bold text-white mb-10">
         {{ currentLanguage === 'english' ? 'My Journey' : 'Mon Parcours' }}
       </h2>
       
@@ -348,7 +361,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick, watch, reactive } from 'vue'
+import { ref, computed, onMounted, nextTick, watch, reactive, onUnmounted } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -371,26 +384,20 @@ const toggleMobileMenu = () => {
 
 const currentLanguage = ref('english');
 
-const switchLanguage = () => {
-  const overlay = document.getElementById('language-transition');
-  if (!overlay) return;
+const emit = defineEmits(['language-change'])
 
-  overlay.classList.remove('is-hidden');
-  overlay.classList.remove('animate-out');
-  overlay.offsetHeight;
-  overlay.classList.add('animate-in');
+const switchLanguage = async () => {
+  const enterPromise = new Promise(resolve => {
+    emit('language-change', resolve)
+  })
 
-  setTimeout(() => {
-    currentLanguage.value = currentLanguage.value === 'english' ? 'french' : 'english';
-    overlay.classList.remove('animate-in');
-    overlay.classList.add('animate-out');
+  await enterPromise
+  await new Promise(resolve => setTimeout(resolve, 300))
 
-    setTimeout(() => {
-      overlay.classList.remove('animate-out');
-      overlay.classList.add('is-hidden');
-    }, 600);
-  }, 600);
-};
+  currentLanguage.value = currentLanguage.value === 'english' ? 'french' : 'english'
+
+  await emit('language-change')
+}
 
 const skills = ref([])
 const steps = ref([])
@@ -472,7 +479,7 @@ async function submitForm() {
     form.message = ''
   } catch (error) {
     console.error(error)
-    flashNotice.value = error.message || "Erreur inconnue lors de l’envoi"
+    flashNotice.value = error.message || "Erreur inconnue lors de l'envoi"
   } finally {
     isSending.value = false
   }
@@ -522,6 +529,78 @@ watch(filteredProjects, async () => {
   })
 }, { immediate: true })
 
+// ** Transition de volet **
+onMounted(() => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.set("#info-transition", {
+    visibility: "hidden",
+    clipPath: "inset(50.5% 0 50.5% 0)"
+  });
+
+  gsap.set("#transition-wrap", {
+    visibility: "hidden",
+    opacity: 1
+  });
+
+  const tlVolet = gsap.timeline({
+    scrollTrigger: {
+      trigger: "#scrollSpacer",
+      start: "top top",
+      end: "bottom top",
+      scrub: 0.5,
+      pin: true,
+      onEnter: () => {
+        gsap.set("#info-transition", { visibility: "visible" });
+        gsap.set("#transition-wrap", { visibility: "visible", opacity: 1 });
+      },
+      onLeaveBack: () => {
+        gsap.set("#info-transition", { visibility: "hidden" });
+        gsap.set("#transition-wrap", { visibility: "hidden", opacity: 1 });
+      },
+      onUpdate: (self) => {
+        const progress = self.progress;
+        const inset = 50.5 - (progress * 50.5);
+        gsap.set("#info-transition", {
+          clipPath: `inset(${inset}% 0 ${inset}% 0)`
+        });
+      }
+    }
+  });
+
+  tlVolet.to([".transition-column.top", ".transition-column.bottom"], {
+    scaleY: 1,
+    ease: "none",
+    duration: 1
+  }, 0);
+
+  tlVolet.to("#info-transition h2", {
+    opacity: 1,
+    scale: 1,
+    ease: "power2.out",
+    duration: 0.5
+  }, ">0.2");
+
+  const sections = ["#info", "#skills", "#projects", "#contact"];
+  
+  sections.forEach((section, index) => {
+    gsap.from(`${section} .timeline-item, ${section} .skill-card, ${section} .project-card`, {
+      scrollTrigger: {
+        trigger: section,
+        start: "top center",
+        end: "bottom center",
+        scrub: 0.5,
+        toggleActions: "play none none reverse"
+      },
+      opacity: 0,
+      y: 50,
+      stagger: 0.2,
+      ease: "power2.out",
+      delay: index * 0.1
+    });
+  });
+})
+
 onMounted(async () => {
   gsap.registerPlugin(ScrollTrigger);
 
@@ -550,7 +629,7 @@ onMounted(async () => {
     console.error(error)
   }
 
-  // **✅ Effet de lien magnétique amélioré**
+  // ** Effet de lien magnétique amélioré**
   document.querySelectorAll('.magnetic-area').forEach(area => {
     const link = area.querySelector('.magnetic-link');
 
@@ -566,7 +645,7 @@ onMounted(async () => {
     });
   });
 
-  // **✅ Effet de superposition des lettres du nom "Sylvain Cavalier"**
+  // ** Effet de superposition des lettres du nom "Sylvain Cavalier"**
   if (overlapText.value) {
     const textContent = overlapText.value.textContent
     overlapText.value.innerHTML = ''
@@ -716,17 +795,81 @@ onMounted(() => {
 /* Transition de volet */
 
 #hero {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 10;
-  transition: opacity 0.5s ease-out;
+  z-index: 1;
+  background-color: #f3f4f6;
 }
 
-#info {
+#transition-wrap {
+  visibility: hidden;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform;
+}
+
+.transition-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.transition-column {
+  flex: 1;
+  background-color: #111827;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.transition-column.top {
+  transform-origin: bottom;
+  transform: scaleY(0);
+}
+
+.transition-column.bottom {
+  transform-origin: top;
+  transform: scaleY(0);
+}
+
+#info-transition {
+  visibility: hidden;
+  position: fixed;
+  inset: 0;
+  background-color: #111827;
+  z-index: 3;
+  opacity: 1;
+  pointer-events: none;
+  clip-path: inset(50.5% 0 50.5% 0);
+  will-change: clip-path;
+}
+
+#info, #skills, #projects {
   position: relative;
-  height: 450vh;
+  z-index: 4;
+  background-color: #111827;
+  min-height: 100vh;
+}
+
+#contact {
+  position: relative;
+  z-index: 4;
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+.transition-hidden {
+  visibility: hidden;
+}
+
+.transition-hidden .transition-column {
+  visibility: hidden;
 }
 
 /* Magnetic links */

@@ -1,69 +1,104 @@
 <template>
   <div id="app-wrapper" class="relative z-0">
-    <div id="language-transition" class="language-transition is-hidden">
-      <div class="column" v-for="i in 5" :key="i"></div>
+    <div id="language-transition" class="language-transition" ref="transitionRef">
+      <div v-for="i in 5" :key="i" :ref="el => setColumnRef(el, i-1)" class="column"></div>
     </div>
-    <LandingPage />
+    <LandingPage @language-change="handleLanguageTransition" />
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import LandingPage from './LandingPage.vue'
+import gsap from 'gsap'
+
+const transitionRef = ref(null)
+const columns = ref(Array(5).fill(null))
+let isAnimating = false
+
+const setColumnRef = (el, index) => {
+  if (el) {
+    columns.value[index] = el
+  }
+}
+
+// Initialiser les colonnes
+onMounted(() => {
+  columns.value.forEach((column, index) => {
+    if (column) {
+      gsap.set(column, {
+        y: '100%',
+        left: `${index * 20}%`,
+        width: '20%',
+        position: 'absolute'
+      })
+    }
+  })
+})
+
+// Fonction pour gérer la transition de langue
+const handleLanguageTransition = async (onEnterComplete) => {
+  if (isAnimating) return
+  isAnimating = true
+
+  // Animation d'entrée
+  const tl = gsap.timeline()
+  
+  columns.value.forEach((column, index) => {
+    if (column) {
+      tl.to(column, {
+        y: '0%',
+        duration: 0.3,
+        ease: 'power2.inOut',
+        delay: index * 0.1
+      }, 0)
+    }
+  })
+
+  // Attendre que l'animation d'entrée soit terminée
+  await tl.then()
+
+  // Déclencher le callback pour changer la langue
+  if (onEnterComplete) onEnterComplete()
+
+  // Créer une nouvelle timeline pour l'animation de sortie
+  const tlOut = gsap.timeline()
+  
+  columns.value.forEach((column, index) => {
+    if (column) {
+      tlOut.to(column, {
+        y: '100%',
+        duration: 0.3,
+        ease: 'power2.inOut',
+        delay: index * 0.1
+      }, 0)
+    }
+  })
+
+  // Attendre que l'animation de sortie soit terminée
+  await tlOut.then()
+  isAnimating = false
+}
 </script>
 
 <style>
 .language-transition {
-  opacity: 1;
-  transition: opacity 0.3s ease;
   position: fixed;
   inset: 0;
-  display: flex;
   z-index: 9999;
   pointer-events: none;
-}
-
-.language-transition.is-hidden {
-  opacity: 0;
-  pointer-events: none;
+  overflow: hidden;
+  width: 100vw;
 }
 
 .language-transition .column {
-  flex: 1;
+  position: absolute;
   height: 100vh;
   background-color: #09041e;
-  transform: translateY(100%);
   will-change: transform;
   backface-visibility: hidden;
-}
-
-/* animation d’entrée */
-.language-transition.animate-in .column {
-  animation: slide-in 0.5s ease-out forwards;
-}
-
-/* animation de sortie */
-.language-transition.animate-out .column {
-  animation: slide-out 0.5s ease-in forwards;
-}
-
-.language-transition.animate-in .column,
-.language-transition.animate-out .column {
-  animation-fill-mode: forwards; /* <--- obligatoire */
-}
-
-.language-transition .column:nth-child(1) { animation-delay: 0s; }
-.language-transition .column:nth-child(2) { animation-delay: 0.05s; }
-.language-transition .column:nth-child(3) { animation-delay: 0.1s; }
-.language-transition .column:nth-child(4) { animation-delay: 0.15s; }
-.language-transition .column:nth-child(5) { animation-delay: 0.2s; }
-
-@keyframes slide-in {
-  0%   { transform: translateY(100%); }
-  100% { transform: translateY(0%); }
-}
-
-@keyframes slide-out {
-  0%   { transform: translateY(0%); }
-  100% { transform: translateY(100%); }
+  width: 20vw;
+  transform: translateY(100%);
+  transition: transform 0.3s ease-in-out;
 }
 </style>
