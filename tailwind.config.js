@@ -21,7 +21,7 @@ module.exports = {
     { pattern: /.*/ },
   ],
   corePlugins: {
-    preflight: true, // on garde preflight pour Tailwind
+    preflight: true,
   },
   plugins: [
     require('@tailwindcss/forms'),
