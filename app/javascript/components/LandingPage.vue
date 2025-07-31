@@ -77,7 +77,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section id="hero" class="relative inset-0 h-screen flex flex-col items-center justify-center z-10 bg-gray-100">
+    <section id="hero" class="relative md:fixed inset-0 h-screen flex flex-col items-center justify-center bg-gray-100">
       <h2 class="glitch font-chakra text-5xl font-bold opacity-0 animate-fadeIn" :data-text="currentLanguage === 'english' ? 'Web Developer & Creative' : 'Développeur Web & Créatif'">
         {{ currentLanguage === 'english' ? 'Web Developer & Creative' : 'Développeur Web & Créatif' }}
       </h2>
@@ -95,7 +95,7 @@
       </div>
     </div>
 
-    <div id="scrollSpacer" style="height: 300vh;"></div>
+    <div id="scrollSpacer" class="hidden md:block" style="height: 300vh;"></div>
 
     <!-- 🎥 TRANSITION VERS INFO (Effet d'ouverture) -->
     <section id="info-transition" class="fixed inset-0 flex items-center justify-center bg-gray-900 z-10"></section>
@@ -543,6 +543,13 @@ onMounted(() => {
     opacity: 1
   });
 
+  const isMobile = window.innerWidth < 768;
+  if (isMobile) {
+    gsap.set("#info-transition", { display: "none" });
+    gsap.set("#transition-wrap", { display: "none" });
+    return;
+  }
+
   const tlVolet = gsap.timeline({
     scrollTrigger: {
       trigger: "#scrollSpacer",
@@ -793,6 +800,24 @@ onMounted(() => {
 }
 
 /* Transition de volet */
+
+@media (max-width: 768px) {
+  #info-transition, #transition-wrap {
+    display: none !important;
+  }
+  
+  /* Sur mobile, hero devient relative pour un affichage normal */
+  #hero {
+    position: relative !important;
+    z-index: auto !important;
+  }
+  
+  /* Sur mobile, les sections suivent un flux normal */
+  #info, #skills, #projects, #contact {
+    position: relative !important;
+    z-index: auto !important;
+  }
+}
 
 #hero {
   position: fixed;
