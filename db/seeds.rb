@@ -113,6 +113,10 @@ skills = [
   { name: "Artificial Intelligence", description: "Frequent use of AI tools like ChatGPT, MidJourney, Sora, Claude, Perplexity. Proficient in integrating AI APIs for web applications.", language: "english" },
   { name: "Intelligence Artificielle", description: "Utilisation fréquente d'outils d'IA comme ChatGPT, MidJourney, Sora, Claude, Perplexity. Compétence en intégration d'API d'IA pour sites web.", language: "french" },
 
+  # French Law skills
+  { name: "French and international law", description: "Master's degree in French Law and 5 years of practical experience in courts as a public agent. Make it ideally fit for Legal Tech jobs.", language: "english" },
+  { name: "Droit français et international", description: "Diplôme de Master en droit et 5 ans de pratique judiciaire en tant que fonctionnaire dans les tribunaux. Double casquette parfaite pour la Legal Tech.", language: "french" },
+
   # Montage Vidéo & Photo
   { name: "Video & Photo Editing", description: "Content creator on YouTube : Regular use of Adobe Premiere Pro, After Effects, and Photoshop at an intermediate-advanced level.", language: "english" },
   { name: "Montage Vidéo & Photo", description: "Créateur de contenu sur YouTube : Utilisation régulière d'Adobe Premiere Pro, After Effects et Photoshop à un niveau intermédiaire-avancé.", language: "french" },

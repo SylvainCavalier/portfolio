@@ -78,8 +78,8 @@
 
     <!-- Hero Section -->
     <section id="hero" class="relative md:fixed inset-0 h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h2 class="glitch font-chakra text-5xl font-bold opacity-0 animate-fadeIn" :data-text="currentLanguage === 'english' ? 'Web Developer & Creative' : 'Développeur Web & Créatif'">
-        {{ currentLanguage === 'english' ? 'Web Developer & Creative' : 'Développeur Web & Créatif' }}
+      <h2 class="glitch font-chakra text-5xl font-bold opacity-0 animate-fadeIn" :data-text="currentLanguage === 'english' ? 'Web Developer, Legal Expert & Creative' : 'Développeur Web, Juriste & Créatif'">
+        {{ currentLanguage === 'english' ? 'Web Developer, Legal Expert & Creative' : 'Développeur Web, Juriste & Créatif' }}
       </h2>
       <p class="font-chakra m-4 text-lg text-center opacity-0 animate-fadeIn delay-200">
         {{ currentLanguage === 'english' ? 'I left a career in Law to pursue my passion for Web development.' : 'J\'ai quitté une carrière en droit pour me consacrer à ma passion pour le développement web.' }}
@@ -138,7 +138,7 @@
     </section>
 
     <!-- Section Skills -->
-    <section id="skills" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12 relative">
+    <section id="skills" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12 relative mt-3">
       <h2 class="text-5xl font-bold mb-10 text-white font-chakra">
         {{ currentLanguage === 'english' ? 'Skills' : 'Compétences' }}
       </h2>
@@ -161,7 +161,7 @@
     </section>
 
     <!-- Section Projects -->
-    <section id="projects" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12">
+    <section id="projects" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12 mt-2">
       <h2 class="text-5xl font-bold mb-10 text-white font-chakra">
         {{ currentLanguage === 'english' ? 'Projects' : 'Projets' }}
       </h2>
