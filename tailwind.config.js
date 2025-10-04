@@ -17,9 +17,10 @@ module.exports = {
       },
     },
   },
-  safelist: [
-    { pattern: /.*/ },
-  ],
+  // safelist: [
+  //   Si vous avez besoin de classes dynamiques spécifiques, ajoutez-les ici
+  //   Exemple: 'bg-red-500', 'text-blue-600'
+  // ],
   corePlugins: {
     preflight: true,
   },

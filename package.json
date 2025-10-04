@@ -1,27 +1,32 @@
 {
+  "name": "portfolio",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "author": "Sylvain Cavalier <contact@sylvaincavalier.com>",
+  "engines": {
+    "node": "20.x"
+  },
   "devDependencies": {
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.10",
-    "@tailwindcss/line-clamp": "^0.4.4",
-    "@tailwindcss/postcss": "^4.1.4",
-    "@tailwindcss/typography": "^0.5.16",
-    "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.3",
-    "vite": "^5.4.18",
-    "vite-plugin-ruby": "^5.1.1"
+    "@tailwindcss/aspect-ratio": "0.4.2",
+    "@tailwindcss/forms": "0.5.10",
+    "@tailwindcss/line-clamp": "0.4.4",
+    "@tailwindcss/postcss": "4.1.4",
+    "@tailwindcss/typography": "0.5.16",
+    "@vitejs/plugin-vue": "5.2.4",
+    "autoprefixer": "10.4.21",
+    "postcss": "8.5.3",
+    "vite": "5.4.20",
+    "vite-plugin-ruby": "5.1.1"
   },
   "dependencies": {
-    "@hotwired/turbo-rails": "^8.0.13",
-    "@studio-freight/lenis": "^1.0.42",
-    "@vitejs/plugin-vue": "^5.2.3",
-    "chroma-js": "^3.1.2",
-    "gsap": "^3.12.7",
+    "@hotwired/turbo-rails": "8.0.13",
+    "chroma-js": "3.1.2",
+    "gsap": "3.12.7",
     "lenis": "^1.2.3",
-    "swiper": "^11.2.6",
-    "tailwindcss": "^3.4.3",
-    "vue": "^3.5.13",
-    "zod": "^3.24.4"
+    "swiper": "11.2.6",
+    "tailwindcss": "3.4.17",
+    "vue": "3.5.15",
+    "zod": "3.24.4"
   }
 }
