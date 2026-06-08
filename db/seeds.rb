@@ -1,14 +1,30 @@
 require 'tempfile'
 require 'open-uri'
 
-Project.destroy_all
-Section.destroy_all
-Skill.destroy_all
-Step.destroy_all
+# Idempotent seed: re-running updates existing records (matched on their natural
+# key) and creates missing ones, instead of wiping everything. Photos are only
+# attached when a project has none yet, so Cloudinary media isn't re-downloaded
+# on every run.
+#
+# Trade-off: removing an entry from this file does NOT delete it from the DB.
+# Delete such orphans manually (e.g. in the console) if needed.
 
-puts "Creating sections..."
+def attach_photo(record, source)
+  if source.start_with?("http")
+    io = URI.open(source)
+    filename = File.basename(URI.parse(source).path)
+  else
+    path = Rails.root.join(source)
+    io = File.open(path)
+    filename = File.basename(path)
+  end
 
-Section.create([
+  record.photos.attach(io: io, filename: filename, content_type: "image/png")
+end
+
+puts "Upserting sections..."
+
+sections = [
   { title: "Info", content: "Découvrez mon parcours.", order: 1, language: "french" },
   { title: "Skills", content: "Découvrez mes compétences.", order: 2, language: "french" },
   { title: "Projects", content: "Découvrez mes projets réalisés en tant que développeur web.", order: 3, language: "french" },
@@ -18,11 +34,15 @@ Section.create([
   { title: "Skills", content: "Explore my skills.", order: 2, language: "english" },
   { title: "Projects", content: "Check out my web development projects.", order: 3, language: "english" },
   { title: "Contact", content: "Contact me via the form below.", order: 4, language: "english" }
-])
+]
 
-puts "Sections created!"
+sections.each do |attrs|
+  Section.find_or_initialize_by(title: attrs[:title], language: attrs[:language]).update!(attrs)
+end
 
-puts "Creating projects..."
+puts "Sections ready!"
+
+puts "Upserting projects..."
 
 projects = [
   {
@@ -31,6 +51,7 @@ projects = [
     github_url: "https://github.com/SylvainCavalier/GN-MAP",
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "french",
+    position: 3,
     photos: [
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948234/gnmap1_jcqab9.png",
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948231/gnmap2_gezfha.png"
@@ -43,6 +64,7 @@ projects = [
     github_url: "https://github.com/SylvainCavalier/GN-MAP",
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "english",
+    position: 3,
     photos: [
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948234/gnmap1_jcqab9.png",
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948231/gnmap2_gezfha.png"
@@ -56,6 +78,7 @@ projects = [
     github_url: "https://github.com/SylvainCavalier/SW-Crediter",
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "french",
+    position: 2,
     photos: [
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr1_h8jggi.png",
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948230/swjdr3_enml0x.png",
@@ -70,6 +93,7 @@ projects = [
     github_url: "https://github.com/SylvainCavalier/SW-Crediter",
     tech_stack: "Ruby on Rails, Stimulus, Bootstrap",
     language: "english",
+    position: 2,
     photos: [
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr1_h8jggi.png",
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948230/swjdr3_enml0x.png",
@@ -85,6 +109,7 @@ projects = [
     github_url: "https://narval.info",
     tech_stack: "Ruby on Rails, Hotwire (Turbo/Stimulus), Tailwind CSS, PostgreSQL, Devise, Pundit",
     language: "french",
+    position: 1,
     photos: [
       "db/projects/narval/NarvalPortfolio.png",
       "db/projects/narval/NarvalPortfolio2.png"
@@ -97,6 +122,7 @@ projects = [
     github_url: "https://narval.info",
     tech_stack: "Ruby on Rails, Hotwire (Turbo/Stimulus), Tailwind CSS, PostgreSQL, Devise, Pundit",
     language: "english",
+    position: 1,
     photos: [
       "db/projects/narval/NarvalPortfolio.png",
       "db/projects/narval/NarvalPortfolio2.png"
@@ -105,30 +131,20 @@ projects = [
   }
 ]
 
+projects.each do |attrs|
+  photos = attrs.delete(:photos) || []
 
-projects.each do |project_attrs|
-  photos = project_attrs.delete(:photos)
-  video_url = project_attrs.delete(:video_url)
+  project = Project.find_or_initialize_by(name: attrs[:name], language: attrs[:language])
+  project.update!(attrs)
 
-  project = Project.create!(project_attrs.merge(video_url: video_url))
-
-  photos.each do |photo_source|
-    if photo_source.start_with?("http")
-      io = URI.open(photo_source)
-      filename = File.basename(URI.parse(photo_source).path)
-    else
-      path = Rails.root.join(photo_source)
-      io = File.open(path)
-      filename = File.basename(path)
-    end
-
-    project.photos.attach(io: io, filename: filename, content_type: "image/png")
+  if project.photos.blank?
+    photos.each { |source| attach_photo(project, source) }
   end
 end
 
-puts "Projects created!"
+puts "Projects ready!"
 
-puts "Creating skills..."
+puts "Upserting skills..."
 
 skills = [
   # Web Design
@@ -163,9 +179,13 @@ skills = [
   { name: "Formateur", description: "Enseignement du droit du travail à la faculté de droit de l'ICP Paris.", language: "french" }
 ]
 
-Skill.create!(skills)
+skills.each do |attrs|
+  Skill.find_or_initialize_by(name: attrs[:name], language: attrs[:language]).update!(attrs)
+end
 
-puts "Skills created successfully!"
+puts "Skills ready!"
+
+puts "Upserting steps..."
 
 steps = [
   # Développeur Web
@@ -189,6 +209,8 @@ steps = [
   { name: "Student & Firefighter", date: "2009-2014", location: "Grenoble", description: "Law student, part-time job as a volunteer firefighter in Grenoble.", language: "english" }
 ]
 
-Step.create!(steps)
+steps.each do |attrs|
+  Step.find_or_initialize_by(name: attrs[:name], language: attrs[:language]).update!(attrs)
+end
 
-puts "Steps created successfully!"
+puts "Steps ready!"

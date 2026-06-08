@@ -138,7 +138,7 @@
     </section>
 
     <!-- Section Skills -->
-    <section id="skills" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12 relative mt-3">
+    <section id="skills" class="min-h-screen bg-gray-900 flex flex-col items-center justify-center px-6 py-12 relative mt-10">
       <h2 class="text-5xl font-bold mb-10 text-white font-chakra">
         {{ currentLanguage === 'english' ? 'Skills' : 'Compétences' }}
       </h2>

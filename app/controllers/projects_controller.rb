@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   def index
-    projects = Project.with_attached_photos.order(:name)
+    projects = Project.with_attached_photos.order(Arel.sql("position ASC NULLS LAST"), :name)
 
     @projects = projects.map do |project|
       {
