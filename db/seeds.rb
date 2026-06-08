@@ -77,6 +77,31 @@ projects = [
       "https://res.cloudinary.com/dhemegutt/image/upload/v1745948228/swjdr8_w2t9fz.png"
     ],
     video_url: 'https://res.cloudinary.com/dhemegutt/video/upload/v1747318785/starwars_reencoded_xdbfsk.mp4'
+  },
+
+  {
+    name: "Narval",
+    description: "Média indépendant français publiant articles, dessins de presse et vidéos. Monolithe Rails SSR pensé pour le SEO : rendu serveur intégral, espace rédacteur protégé (CRUD des publications, mise en avant et organisation de la une en drag-and-drop), éditeur de texte riche et recherche plein texte.",
+    github_url: "https://narval.info",
+    tech_stack: "Ruby on Rails, Hotwire (Turbo/Stimulus), Tailwind CSS, PostgreSQL, Devise, Pundit",
+    language: "french",
+    photos: [
+      "db/projects/narval/NarvalPortfolio.png",
+      "db/projects/narval/NarvalPortfolio2.png"
+    ],
+    video_url: nil
+  },
+  {
+    name: "Narval",
+    description: "An independent French media platform publishing articles, editorial cartoons and videos. A SEO-first Rails SSR monolith: fully server-rendered, with a protected editor area (publication CRUD, drag-and-drop homepage curation), a rich-text editor and full-text search.",
+    github_url: "https://narval.info",
+    tech_stack: "Ruby on Rails, Hotwire (Turbo/Stimulus), Tailwind CSS, PostgreSQL, Devise, Pundit",
+    language: "english",
+    photos: [
+      "db/projects/narval/NarvalPortfolio.png",
+      "db/projects/narval/NarvalPortfolio2.png"
+    ],
+    video_url: nil
   }
 ]
 
@@ -87,12 +112,17 @@ projects.each do |project_attrs|
 
   project = Project.create!(project_attrs.merge(video_url: video_url))
 
-  photos.each do |photo_url|
-    project.photos.attach(
-      io: URI.open(photo_url),
-      filename: File.basename(URI.parse(photo_url).path),
-      content_type: "image/png"
-    )
+  photos.each do |photo_source|
+    if photo_source.start_with?("http")
+      io = URI.open(photo_source)
+      filename = File.basename(URI.parse(photo_source).path)
+    else
+      path = Rails.root.join(photo_source)
+      io = File.open(path)
+      filename = File.basename(path)
+    end
+
+    project.photos.attach(io: io, filename: filename, content_type: "image/png")
   end
 end
 

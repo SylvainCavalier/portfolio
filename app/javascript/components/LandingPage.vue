@@ -82,7 +82,7 @@
         {{ currentLanguage === 'english' ? 'Web Developer, Legal Expert & Creative' : 'Développeur Web, Juriste & Créatif' }}
       </h2>
       <p class="font-chakra m-4 text-lg text-center opacity-0 animate-fadeIn delay-200">
-        {{ currentLanguage === 'english' ? 'I left a career in Law to pursue my passion for Web development.' : 'J\'ai quitté une carrière en droit pour me consacrer à ma passion pour le développement web.' }}
+        {{ currentLanguage === 'english' ? 'I left a career in Law to pursue my passion for Web development and Legal Tech.' : 'J\'ai quitté une carrière en droit pour me consacrer à ma passion pour le développement web et la Legal Tech.' }}
       </p>
       <div class="absolute bottom-10 animate-bounce text-gray-700">⬇ {{ currentLanguage === 'english' ? 'Scroll to Explore' : 'Faites défiler pour explorer' }} ⬇</div>
     </section>
@@ -196,12 +196,14 @@
             <h3 class="font-bold text-2xl mb-2 text-white font-chakra">{{ project.name }}</h3>
             <p class="text-gray-300 mb-4">{{ project.description }}</p>
             <p class="text-gray-300">Tech stack: {{ project.tech_stack }}</p>
-            <a 
-              :href="project.github_url" 
+            <a
+              :href="project.github_url"
               class="text-gray-300 mt-4 block transition-colors duration-200 hover:text-purple-600"
               target="_blank"
             >
-              See on GitHub
+              {{ project.github_url && project.github_url.includes('github.com')
+                ? 'See on GitHub'
+                : (currentLanguage === 'english' ? 'Visit website' : 'Voir le site') }}
             </a>
           </div>
         </div>
