@@ -2,21 +2,31 @@ class ProjectsController < ApplicationController
   def index
     projects = Project.with_attached_photos.order(Arel.sql("position ASC NULLS LAST"), :name)
 
-    @projects = projects.map do |project|
-      {
-        id: project.id,
-        name: project.name,
-        description: project.description,
-        github_url: project.github_url,
-        tech_stack: project.tech_stack,
-        language: project.language,
-        photos: project.photos.map { |photo| cloudinary_url(photo) }.compact,
-        video_url: project.video_url
-      }
-    end
+    # Cache conditionnel : le client revalide à chaque requête mais reçoit un 304
+    # (sans corps) tant que rien n'a changé. Dès qu'un projet ou une de ses photos
+    # est modifié, le Last-Modified change et la réponse est régénérée immédiatement.
+    last_modified = [
+      Project.maximum(:updated_at),
+      ActiveStorage::Attachment.where(record_type: "Project").maximum(:created_at)
+    ].compact.max
 
-    expires_in 1.hour, public: true
-    render json: @projects
+    if stale?(last_modified: last_modified, public: true)
+      @projects = projects.map do |project|
+        {
+          id: project.id,
+          name: project.name,
+          description: project.description,
+          github_url: project.github_url,
+          tech_stack: project.tech_stack,
+          language: project.language,
+          photos: project.photos.map { |photo| cloudinary_url(photo) }.compact,
+          video_url: project.video_url
+        }
+      end
+
+      expires_in 0, public: true, must_revalidate: true
+      render json: @projects
+    end
   end
 
   def show
